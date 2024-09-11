@@ -1,0 +1,114 @@
+<!-- Bootstrap CSS for styling -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Orders Table -->
+<div class="container mt-5">
+    <h1 class="mb-4">Orders</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>#1012</td>
+                <td>John Doe</td>
+                <td><span class="badge badge-success">Completed</span></td>
+                <td>$120.00</td>
+                <td>2024-09-01</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" onclick="viewOrder(1012)">View</button>
+                </td>
+            </tr>
+            <tr>
+                <td>#1013</td>
+                <td>Jane Smith</td>
+                <td><span class="badge badge-warning">Pending</span></td>
+                <td>$75.50</td>
+                <td>2024-09-02</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" onclick="viewOrder(1013)">View</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Order Details Modal -->
+<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderModalLabel">Order Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Order details will be dynamically loaded here -->
+                <div id="orderDetails"></div>
+
+                <!-- Actions -->
+                <button class="btn btn-info mt-3" onclick="editOrder()">Edit Order</button>
+                <button class="btn btn-success mt-3" onclick="manageShipping()">Manage Shipping</button>
+                <button class="btn btn-primary mt-3" onclick="printInvoice()">Print Invoice</button>
+                <button class="btn btn-warning mt-3" onclick="refundOrder()">Process Refund</button>
+                <button class="btn btn-secondary mt-3" onclick="communicateWithCustomer()">Contact Customer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS, Popper.js, and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // JavaScript functions for handling the actions
+    function viewOrder(orderId) {
+        // Fetch order details from the backend (replace with your AJAX/fetch call)
+        let orderDetails = `<p>Details for Order ID: ${orderId}</p>
+                            <p>Customer: John Doe</p>
+                            <p>Status: Completed</p>
+                            <p>Total: $120.00</p>
+                            <p>Date: 2024-09-01</p>`;
+
+        // Load order details into the modal
+        document.getElementById('orderDetails').innerHTML = orderDetails;
+
+        // Show the modal
+        $('#orderModal').modal('show');
+    }
+
+    function editOrder() {
+        alert('Edit Order functionality to be implemented.');
+        // Implement your logic here
+    }
+
+    function manageShipping() {
+        alert('Manage Shipping functionality to be implemented.');
+        // Implement your logic here
+    }
+
+    function printInvoice() {
+        alert('Print Invoice functionality to be implemented.');
+        // Implement your logic here
+    }
+
+    function refundOrder() {
+        alert('Process Refund functionality to be implemented.');
+        // Implement your logic here
+    }
+
+    function communicateWithCustomer() {
+        alert('Contact Customer functionality to be implemented.');
+        // Implement your logic here
+    }
+</script>
