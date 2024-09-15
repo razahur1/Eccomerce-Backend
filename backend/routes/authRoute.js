@@ -2,6 +2,7 @@ import express from "express";
 import {
   registerController,
   loginController,
+  logoutController,
   AccountVerificationController,
   forgotPasswordController,
   resetPasswordController,
@@ -24,6 +25,9 @@ router.post("/register", registerController);
 // Login || POST
 router.post("/login", loginController);
 
+// Logout || GET
+router.get("/logout", requireSignIn, logoutController);
+
 //forget-password || POST
 router.post("/forgot-password", forgotPasswordController);
 
@@ -31,7 +35,7 @@ router.post("/forgot-password", forgotPasswordController);
 router.post("/reset-password", resetPasswordController);
 
 //Change Password || POST
-router.post("/change-password", requireSignIn, changePasswordController);
+router.put("/change-password", requireSignIn, changePasswordController);
 
 //test routes
 router.get("/test", requireSignIn, IsAdmin, testController);

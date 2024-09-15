@@ -3,7 +3,7 @@ import {
   comparePassword,
   generateOTP,
 } from "../helpers/authHelper.js";
-import { sendMail } from "../helpers/mailHelper.js";
+import { sendMail, isEmailValid } from "../helpers/mailHelper.js";
 
 import userModel from "../models/userModel.js";
 import otpModel from "../models/otpModel.js";
@@ -13,13 +13,20 @@ import JWT from "jsonwebtoken";
 // POST - Account Verification
 export const AccountVerificationController = async (req, res) => {
   try {
-    const { name, email, password,role } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Validation
     if (!name) return res.status(400).send({ error: "Name is required" });
     if (!email) return res.status(400).send({ error: "Email is required" });
     if (!password)
       return res.status(400).send({ error: "Password is required" });
+
+    // Email Validation
+    const { valid, reason } = await isEmailValid(email);
+    if (!valid)
+      return res
+        .status(400)
+        .send({ success: false, message: `Invalid Email Address` });
 
     // Check if the user exists
     const user = await userModel.findOne({ email });
@@ -45,7 +52,7 @@ export const AccountVerificationController = async (req, res) => {
     await sendMail(
       email,
       "Account Verification",
-      `Your OTP for account verification is ${otp}. This OTP is valid for 5 minutes.`
+      `Your OTP for account verification is ${otp}. This OTP is valid for 2 minutes.`
     );
 
     res.status(200).send({
@@ -62,14 +69,14 @@ export const AccountVerificationController = async (req, res) => {
   }
 };
 
-// POST - REGISTER
+// POST - verify OTP and REGISTER
 export const registerController = async (req, res) => {
   try {
     const { name, otp, email, password, role } = req.body;
 
     // Validate OTP
     const otpRecord = await otpModel.findOne({ email, otp });
-    
+
     if (!otpRecord) {
       return res
         .status(400)
@@ -123,7 +130,7 @@ export const loginController = async (req, res) => {
     if (!user) {
       return res.status(404).send({
         success: false,
-        message: "Email is not registered",
+        message: "Email is not registered. Please signup first.",
       });
     }
 
@@ -132,7 +139,7 @@ export const loginController = async (req, res) => {
     if (!match) {
       return res.status(200).send({
         success: false,
-        message: "Invalid password",
+        message: "Invalid email or password",
       });
     }
 
@@ -141,20 +148,58 @@ export const loginController = async (req, res) => {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
-    res.status(200).send({
-      success: true,
-      message: "Login successfully",
-      user: {
-        name: user.name,
-        email: user.email,
-      },
-      token,
-    });
+    // Set token in cookie
+    res
+      .status(200)
+      .cookie("token", token, {
+        secure: false,
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        domain: "localhost",
+        expires: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+      })
+      .send({
+        success: true,
+        message: "Login successfully",
+        user: {
+          name: user.name,
+          email: user.email,
+        },
+        token,
+      });
+    console.log("Cookie set:", res.getHeader("Set-Cookie"));
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
       message: "Error in login",
+      error,
+    });
+  }
+};
+
+// GET - logout Controller
+export const logoutController = async (req, res) => {
+  try {
+    // Clear the cookie by setting its expiration to a past date
+    res
+      .status(200)
+      .cookie("token", "", {
+        expires: new Date(0),
+        secure: process.env.NODE_ENV === "development" ? true : false,
+        httpOnly: process.env.NODE_ENV === "development" ? true : false,
+        sameSite: process.env.NODE_ENV === "development" ? true : false,
+      })
+      .send({
+        success: true,
+        message: "Logout successfully",
+      });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error in logout",
       error,
     });
   }
@@ -184,7 +229,7 @@ export const forgotPasswordController = async (req, res) => {
     await sendMail(
       email,
       "Your OTP for Password Reset",
-      `Your OTP for password reset is ${otp}. This OTP is valid for 5 minutes.`
+      `Your OTP for password reset is ${otp}. This OTP is valid for 2 minutes.`
     );
 
     res.status(200).send({
@@ -241,18 +286,17 @@ export const resetPasswordController = async (req, res) => {
 // POST - Change Password
 export const changePasswordController = async (req, res) => {
   try {
-    const { email, currentPassword, newPassword } = req.body;
+    const { currentPassword, newPassword } = req.body;
 
     // Validate input
-    if (!email || !currentPassword || !newPassword) {
+    if (!currentPassword || !newPassword) {
       return res.status(400).send({
         success: false,
         message: "All fields are required",
       });
     }
 
-    // Find the user
-    const user = await userModel.findOne({ email });
+    const user = req.user;
     if (!user) {
       return res.status(404).send({
         success: false,

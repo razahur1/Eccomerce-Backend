@@ -3,6 +3,7 @@ import colors from "colors";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoute.js";
@@ -25,9 +26,16 @@ connectDB();
 const app = express();
 
 //middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5500",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(cookieParser());
 
 //routes
 app.use("/api/v1/auth", authRoutes);
@@ -51,6 +59,6 @@ const PORT = process.env.PORT || 8080;
 //run listen
 app.listen(PORT, () => {
   console.log(
-    `server running on ${process.env.DEV_MODE} mode on ${PORT}`.bgMagenta.white
+    `server running on ${process.env.NODE_ENV} mode on ${PORT}`.bgMagenta.white
   );
 });
