@@ -1,4 +1,5 @@
 import ENDPOINTS from "../../assets/js/config.js";
+import { setUserInfo } from "../../assets/js/auth.js";
 import {
   showError,
   clearErrors,
@@ -19,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    // Clear previous errors
     clearErrors();
 
     if (!email || !emailRegex.test(email)) {
@@ -44,9 +44,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await response.json();
 
       if (result.success) {
-        //window.location.href = "../home/index.html";
-        window.location.href = "../account/account-profile.html";
         showToast("User logged in successfully", "success");
+        localStorage.setItem("token", result.token);
+
+        const user = result.user;
+        setUserInfo(user);
+
+        if (user.role === "admin") {
+          window.location.href = "../adminpanel/Dashboard.html";
+        } else {
+          window.location.href = "../account/account-profile.html";
+        }
       } else {
         showError("password-error", result.message);
       }

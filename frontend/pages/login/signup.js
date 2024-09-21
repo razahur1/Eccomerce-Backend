@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const verifyOtpButton = document.getElementById("verify-otp");
   const resendOtpButton = document.getElementById("resend-otp");
 
-  // Form submission
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -26,11 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmPassword = document.getElementById("confirm-password").value;
     const terms = document.getElementById("terms").checked;
 
-    // Regex for validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
 
-    // Clear previous errors
     clearErrors();
 
     let valid = true;
@@ -60,14 +57,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (valid) {
-      // Show the spinner before the request starts
       showSpinner();
 
       try {
         const response = await fetch(ENDPOINTS.VERIFY_ACCOUNT, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, password }),
+          body: JSON.stringify({ firstName: name, email, password }),
         });
         const result = await response.json();
 
@@ -76,25 +72,21 @@ document.addEventListener("DOMContentLoaded", () => {
           startResendTimer("resend-otp", 120); // 2 minutes
         } else {
           showError("email-error", result.message);
-          //showToast(result.message, "danger");
         }
       } catch (error) {
         console.error("Error:", error);
         clearInputs();
         showToast("An error occurred during signup", "danger");
       } finally {
-        // Hide the spinner after the request completes
         hideSpinner();
       }
     }
   });
 
-  // Close modal
   closeModal.addEventListener("click", () => {
     otpModal.style.display = "none";
   });
 
-  // Verify OTP
   verifyOtpButton.addEventListener("click", async () => {
     const otp = document.getElementById("otp").value.trim();
     const name = document.getElementById("name_1").value.trim();
@@ -106,14 +98,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Show the spinner before the request starts
     showSpinner();
 
     try {
       const response = await fetch(ENDPOINTS.REGISTER, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, otp }),
+        body: JSON.stringify({ firstName: name, email, password, otp }),
       });
       const result = await response.json();
 
@@ -121,7 +112,9 @@ document.addEventListener("DOMContentLoaded", () => {
         otpModal.style.display = "none";
         signupForm.reset();
         showToast("User registered successfully", "success");
-        window.location.href = "login.html";
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 3000);
       } else {
         showError("otp-error", result.message);
       }
@@ -130,18 +123,15 @@ document.addEventListener("DOMContentLoaded", () => {
       clearInputs();
       showToast("An error occurred during signup", "danger");
     } finally {
-      // Hide the spinner after the request completes
       hideSpinner();
     }
   });
 
-  // Resend OTP
   resendOtpButton.addEventListener("click", async () => {
     const name = document.getElementById("name_1").value.trim();
     const email = document.getElementById("email_1").value.trim();
     const password = document.getElementById("password").value;
 
-    // Show the spinner before the request starts
     showSpinner();
 
     try {
@@ -166,7 +156,6 @@ document.addEventListener("DOMContentLoaded", () => {
       clearInputs();
       showToast("An error occurred during signup", "danger");
     } finally {
-      // Hide the spinner after the request completes
       hideSpinner();
     }
   });

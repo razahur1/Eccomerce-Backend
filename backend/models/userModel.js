@@ -2,9 +2,12 @@ import mongoose from "mongoose";
 
 const userModel = new mongoose.Schema(
   {
-    name: {
+    firstName: {
       type: String,
       required: true,
+    },
+    lastName: {
+      type: String,
     },
     email: {
       type: String,
@@ -32,6 +35,14 @@ const userModel = new mongoose.Schema(
       type: String,
       enum: ["admin", "user"],
       default: "user",
+    },
+    resetToken: {
+      type: String,
+      default: null,
+    },
+    resetTokenExpiration: {
+      type: Date,
+      default: null,
     },
   },
   { timestamps: true }

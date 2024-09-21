@@ -14,7 +14,7 @@ import { requireSignIn, IsAdmin } from "../middlewares/authMiddleware.js";
 //route object
 const router = express.Router();
 
-//routing
+//routing   //validate-token baki ha
 
 // Account Verification || POST
 router.post("/verify-account", AccountVerificationController); //5 min

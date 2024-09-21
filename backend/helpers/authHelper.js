@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 
 export const hashPassword = async (password) => {
   try {
@@ -24,6 +25,6 @@ export const generateOTP = () => {
   return result;
 };
 
-
-
-
+export const generateResetToken = () => {
+  return crypto.randomBytes(32).toString("hex");
+};

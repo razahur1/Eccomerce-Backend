@@ -24,7 +24,7 @@ export const getUsersController = async (req, res) => {
 export const getUserProfileController = async (req, res) => {
   try {
     const user = await userModel.findById(req.user._id);
-    // user.password = undefined;
+    //user.password = undefined;
     if (!user) {
       return res.status(404).send({
         success: false,
@@ -79,7 +79,7 @@ export const getUserByIDController = async (req, res) => {
 // PUT - Update User Profile
 export const updateProfileController = async (req, res) => {
   try {
-    const { name, email, mobileNumber } = req.body;
+    const { firstName, lastName, email, mobileNumber } = req.body;
 
     // Find the user
     const user = await userModel.findById(req.user._id);
@@ -91,7 +91,8 @@ export const updateProfileController = async (req, res) => {
     }
 
     // Update user details
-    user.name = name || user.name;
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
     user.email = email || user.email;
     user.mobileNumber = mobileNumber || user.mobileNumber;
 
@@ -154,7 +155,7 @@ export const updateProfilePicController = async (req, res) => {
 // PUT - Update user profile with photo
 export const updateProfileWithPicController = async (req, res) => {
   try {
-    const { name, email, mobileNumber, role } = req.body;
+    const { firstName, lastName, email, mobileNumber, role } = req.body;
 
     // Find the user
     const user = await userModel.findById(req.user._id);
@@ -166,7 +167,8 @@ export const updateProfileWithPicController = async (req, res) => {
     }
 
     // Update user details (keep existing values if not provided)
-    user.name = name || user.name;
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
     user.email = email || user.email;
     user.role = role || user.role;
     user.mobileNumber = mobileNumber || user.mobileNumber;
@@ -179,7 +181,7 @@ export const updateProfileWithPicController = async (req, res) => {
       if (user.profilePhoto && user.profilePhoto.public_id) {
         await cloudinary.v2.uploader.destroy(user.profilePhoto.public_id);
       }
-      
+
       const cdb = await cloudinary.v2.uploader.upload(file.content);
       user.profilePhoto = {
         public_id: cdb.public_id,
@@ -204,4 +206,3 @@ export const updateProfileWithPicController = async (req, res) => {
     });
   }
 };
-

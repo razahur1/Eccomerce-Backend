@@ -5,7 +5,7 @@ export const isEmailValid = (email) => {
   return emailValidator.validate(email);
 };
 
-export const sendMail = async (to, subject, text) => {
+export const sendMail = async (to, subject, html) => {
   try {
     const transporter = nodemailer.createTransport({
       service: "Gmail",
@@ -19,11 +19,11 @@ export const sendMail = async (to, subject, text) => {
       from: process.env.EMAIL_USER,
       to,
       subject,
-      text,
+      html,
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(`Email sent to ${to} with otp "${text}"`);
+    console.log(`Email sent to ${to} with otp: "${otp}"`);
   } catch (error) {
     // Handle and log specific errors
     console.error("Error sending email: ", error.message || error);
