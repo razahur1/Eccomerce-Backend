@@ -98,6 +98,48 @@ export const showToast = (message,type = "primary",showLoginButton = false) => {
   });
 };
 
+export const showConfirm = (message) => {
+  return new Promise((resolve) => {
+    const modalContainer = document.createElement("div");
+    modalContainer.className = "modal fade";
+    modalContainer.tabIndex = -1;
+    modalContainer.setAttribute("aria-hidden", "true");
+
+    modalContainer.innerHTML = `
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirm Action</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">${message}</div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-danger" id="confirmButton">OK</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modalContainer);
+    const modal = new bootstrap.Modal(modalContainer);
+
+    // Resolve promise based on user choice
+    modalContainer.querySelector("#confirmButton").onclick = () => {
+      modal.hide();
+      resolve(true);
+    };
+    modalContainer.querySelector(".btn-secondary").onclick = () => {
+      modal.hide();
+      resolve(false);
+    };
+
+    modal.show();
+    modalContainer.addEventListener('hidden.bs.modal', () => modalContainer.remove());
+  });
+};
+
+
 export const showSpinner = () => {
   const spinnerContainer = document.createElement("div");
   spinnerContainer.className =

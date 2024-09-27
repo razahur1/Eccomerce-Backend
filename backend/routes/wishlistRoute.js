@@ -12,9 +12,9 @@ const router = express.Router();
 router.post("/add", requireSignIn, addToWishlistController);
 
 // GET || Get user's wishlist
-router.get("/", requireSignIn, getWishlistController);
+router.get("/get-all", requireSignIn, getWishlistController);
 
 // DELETE - Remove product from wishlist
-router.delete("/remove", requireSignIn, removeFromWishlistController);
+router.delete("/remove/:id", requireSignIn, removeFromWishlistController);
 
 export default router;

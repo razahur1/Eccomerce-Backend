@@ -19,8 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const name = document.getElementById("name_1").value.trim();
-    const email = document.getElementById("email_1").value.trim();
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirm-password").value;
     const terms = document.getElementById("terms").checked;
@@ -89,8 +89,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   verifyOtpButton.addEventListener("click", async () => {
     const otp = document.getElementById("otp").value.trim();
-    const name = document.getElementById("name_1").value.trim();
-    const email = document.getElementById("email_1").value.trim();
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
 
     if (!otp) {
@@ -128,8 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   resendOtpButton.addEventListener("click", async () => {
-    const name = document.getElementById("name_1").value.trim();
-    const email = document.getElementById("email_1").value.trim();
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
 
     showSpinner();

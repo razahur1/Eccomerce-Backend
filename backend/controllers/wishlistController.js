@@ -75,7 +75,7 @@ export const getWishlistController = async (req, res) => {
 // DELETE - Remove product from wishlist
 export const removeFromWishlistController = async (req, res) => {
   try {
-    const { productId } = req.body;
+    const productId = req.params.id;
     const userId = req.user._id;
 
     // Find user's wishlist

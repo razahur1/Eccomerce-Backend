@@ -6,13 +6,20 @@ const orderItemModel = new mongoose.Schema({
     ref: "products",
     required: true,
   },
-  quantity: {
-    type: Number,
+  name: {
+    type: String,
     required: true,
-    min: 1,
   },
   price: {
     type: Number,
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+  image: {
+    type: String,
     required: true,
   },
 });
@@ -30,12 +37,29 @@ const orderModel = new mongoose.Schema(
       ref: "address",
       required: true,
     },
+    paymentMethod: {
+      type: String,
+      enum: ["COD", "ONLINE"],
+      default: "COD",
+    },
     paymentInfo: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "payments",
+      id: String,
+      status: String,
+    },
+    // paymentInfo: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "payments",
+    //   required: true,
+    // },
+    tax: {
+      type: Number,
       required: true,
     },
-    totalPrice: {
+    shippingCharges: {
+      type: Number,
+      required: true,
+    },
+    totalAmount: {
       type: Number,
       required: true,
     },
@@ -44,13 +68,13 @@ const orderModel = new mongoose.Schema(
       enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
       default: "Pending",
     },
-    isPaid: {
-      type: Boolean,
-      default: false,
-    },
-    paidAt: {
-      type: Date,
-    },
+    // isPaid: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // paidAt: {
+    //   type: Date,
+    // },
     deliveredAt: {
       type: Date,
     },

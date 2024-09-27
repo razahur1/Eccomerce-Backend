@@ -4,7 +4,7 @@ import {
   generateOTP,
   generateResetToken,
 } from "../helpers/authHelper.js";
-import { sendMail, isEmailValid } from "../helpers/mailHelper.js";
+import { sendMail } from "../helpers/mailHelper.js";
 
 import otpModel from "../models/otpModel.js";
 import userModel from "../models/userModel.js";
@@ -172,6 +172,19 @@ export const loginController = async (req, res) => {
       });
     }
 
+    // Construct a response object with only the desired fields
+    const responseData = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      profilePhoto: user.profilePhoto,
+    };
+
+    // Add role only if the user is an admin
+    if (user.role === "admin") {
+      responseData.role = user.role;
+    }
+
     // Generate JWT token
     const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
@@ -191,7 +204,7 @@ export const loginController = async (req, res) => {
       .send({
         success: true,
         message: "Login successfully",
-        user,
+        user: responseData,
         token,
       });
     console.log("Cookie set:", res.getHeader("Set-Cookie"));

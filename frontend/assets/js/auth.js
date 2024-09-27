@@ -77,12 +77,18 @@ export const protectAdminRoute = () => {
 export const setUserInfo = (user) => {
   let existingUser = JSON.parse(localStorage.getItem("user")) || {};
 
-  const { firstName, lastName, email, profilePhoto } = user;
+  const { firstName, lastName, email, profilePhoto, role } = user;
 
   existingUser.firstName = firstName || existingUser.firstName;
   existingUser.lastName = lastName || existingUser.lastName;
   existingUser.email = email || existingUser.email;
-  existingUser.profilePhoto = profilePhoto.url || existingUser.profilePicture;
+  existingUser.profilePhoto =
+    profilePhoto && profilePhoto.url
+      ? profilePhoto.url
+      : existingUser.profilePhoto || null;
+  if (role) {
+    existingUser.role = role || existingUser.role;
+  }
 
   localStorage.setItem("user", JSON.stringify(existingUser));
 };

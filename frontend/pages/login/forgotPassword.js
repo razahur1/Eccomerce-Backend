@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   forgotPasswordForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById("email_1").value.trim();
+    const email = document.getElementById("email_2").value.trim();
 
     clearErrors();
 

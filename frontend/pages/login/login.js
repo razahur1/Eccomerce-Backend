@@ -10,7 +10,7 @@ import {
 } from "../../assets/js/utils.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const loginForm = document.getElementById("loginForm");
+  const loginForm = document.getElementById("login-Form");
 
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -51,12 +51,12 @@ document.addEventListener("DOMContentLoaded", () => {
         setUserInfo(user);
 
         if (user.role === "admin") {
-          window.location.href = "../adminpanel/Dashboard.html";
+          window.location.href = "../admin/Dashboard.html";
         } else {
           window.location.href = "../account/account-profile.html";
         }
       } else {
-        showError("password-error", result.message);
+        showToast(result.message, "danger");
       }
     } catch (error) {
       console.error("Error:", error);

@@ -3,8 +3,6 @@ import {
   getUsersController,
   getUserProfileController,
   getUserByIDController,
-  updateProfileController,
-  updateProfilePicController,
   updateProfileWithPicController,
 } from "../controllers/userController.js";
 import { requireSignIn, IsAdmin } from "../middlewares/authMiddleware.js";
@@ -20,12 +18,6 @@ router.get("/profile", requireSignIn, getUserProfileController);
 
 // GET || Get User by ID
 router.get("/:id", requireSignIn, IsAdmin, getUserByIDController);
-
-// PUT || Update User Profile
-//router.put("/profile-update", requireSignIn, updateProfileController);
-
-// PUT || Update User Profile Pic
-//router.put("/update-picture", requireSignIn, singleUpload, updateProfilePicController);
 
 // PUT || Update User Profile and Pic
 router.put("/update-profile",requireSignIn,singleUpload,updateProfileWithPicController);

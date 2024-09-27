@@ -2,35 +2,58 @@ import productModel from "../models/productModel.js";
 import { getDataUri } from "../helpers/dataUriHelper.js";
 import cloudinary from "../config/cloudinary.js";
 
-// POST - Add a new product        //pagination and fiter baki ha
+// POST - Add Products
 export const addProductController = async (req, res) => {
   try {
     const {
       name,
+      intro,
       description,
       price,
       category,
       tags,
       gender,
       sizes,
-      isOnSale,
+      justIn,
+      popular,
+      valued,
+      adored,
+      trendy,
+      sale,
       salePrice,
-      isBestSelling,
+      saleEndDate,
     } = req.body;
     const images = req.files;
 
-    // if (!name || !description || !price || !category || !gender || !sizes) {
-    //   return res
-    //     .status(400)
-    //     .send({ error: "All required fields must be filled" });
-    // }
+    // Validation: Ensure mandatory fields are filled
+    if (
+      !name ||
+      !intro ||
+      !description ||
+      !price ||
+      !category ||
+      !gender ||
+      !sizes
+    ) {
+      return res
+        .status(400)
+        .send({ error: "All required fields must be filled" });
+    }
+
+    const existingProduct = await productModel.findOne({ name });
+    if (existingProduct) {
+      return res.status(400).send({
+        success: false,
+        message: "Product with this name already exists",
+      });
+    }
 
     // Upload product images to Cloudinary
     let uploadedImages = [];
     if (!images || images.length === 0) {
       return res.status(500).send({
         success: false,
-        message: "Please Upload Product Image",
+        message: "Please upload product images",
       });
     }
 
@@ -43,17 +66,26 @@ export const addProductController = async (req, res) => {
       });
     }
 
+    // Create new product with relevant fields
     const product = await new productModel({
       name,
+      intro,
       description,
       price,
-      category,
+      category: JSON.parse(category),
       tags,
       gender,
-      sizes, //: JSON.parse(sizes),
-      isOnSale,
-      salePrice,
-      isBestSelling,
+      sizes: JSON.parse(sizes),
+      highlights: {
+        justIn: justIn || false,
+        popular: popular || false,
+        valued: valued || false,
+        adored: adored || false,
+        trendy: trendy || false,
+        sale: sale || false,
+      },
+      salePrice: salePrice || null,
+      saleEndDate: saleEndDate || null,
       images: uploadedImages,
     }).save();
 
@@ -66,7 +98,7 @@ export const addProductController = async (req, res) => {
     res.status(500).send({
       success: false,
       message: "Error creating product",
-      error,
+      error: error.message,
     });
   }
 };
@@ -74,43 +106,120 @@ export const addProductController = async (req, res) => {
 // GET - Get all products
 export const getProductsController = async (req, res) => {
   try {
-    const products = await productModel.find().populate("category");
+    const {
+      search,
+      category,
+      gender,
+      minPrice,
+      maxPrice,
+      sortBy,
+      justIn,
+      popular,
+      valued,
+      adored,
+      trendy,
+      sale,
+      page = 1, // Default to the first page
+      limit = 10, // Default limit of products per page
+    } = req.query;
+
+    // Base query object
+    let queryObject = {};
+
+    // Search by product name or tags
+    if (search) {
+      queryObject = {
+        ...queryObject,
+        $or: [
+          { code: { $regex: search, $options: "i" } },
+          { name: { $regex: search, $options: "i" } },
+          { tags: { $regex: search, $options: "i" } },
+        ],
+      };
+    }
+
+    // Filter by category
+    if (category) {
+      queryObject.category = category;
+    }
+
+    // Filter by gender
+    if (gender) {
+      queryObject.gender = gender;
+    }
+
+    // Filter by price range
+    if (minPrice || maxPrice) {
+      queryObject.price = {};
+      if (minPrice) {
+        queryObject.price.$gte = minPrice;
+      }
+      if (maxPrice) {
+        queryObject.price.$lte = maxPrice;
+      }
+    }
+
+    // Filter by highlights
+    if (justIn) {
+      queryObject["highlights.justIn"] = justIn === "true";
+    }
+    if (popular) {
+      queryObject["highlights.popular"] = popular === "true";
+    }
+    if (valued) {
+      queryObject["highlights.valued"] = valued === "true";
+    }
+    if (adored) {
+      queryObject["highlights.adored"] = adored === "true";
+    }
+    if (trendy) {
+      queryObject["highlights.trendy"] = trendy === "true";
+    }
+    if (sale) {
+      queryObject["highlights.sale"] = sale === "true";
+    }
+
+    // Sort by price, ratingsAverage, or createdAt
+    let sortObject = {};
+    if (sortBy) {
+      if (sortBy === "priceAsc") {
+        sortObject.price = 1;
+      } else if (sortBy === "priceDesc") {
+        sortObject.price = -1;
+      } else if (sortBy === "ratingsAverage") {
+        sortObject.ratingsAverage = -1;
+      } else if (sortBy === "newest") {
+        sortObject.createdAt = -1;
+      }
+    } else {
+      sortObject.createdAt = 1;
+    }
+
+    // Calculate pagination
+    const skip = (page - 1) * limit; // Calculate how many documents to skip
+
+    // Fetch products with filters, search, highlights, sorting, and pagination
+    const products = await productModel
+      .find(queryObject)
+      .populate("category")
+      .sort(sortObject)
+      .skip(skip)
+      .limit(Number(limit)); // Convert limit to a number
+
+    // Get total count of products for pagination
+    const totalProducts = await productModel.countDocuments(queryObject);
+
     res.status(200).send({
       success: true,
       products,
+      totalProducts,
+      currentPage: Number(page),
+      totalPages: Math.ceil(totalProducts / limit), // Calculate total pages
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Error fetching products",
-      error,
-    });
-  }
-};
-
-// GET - Get products by specific category ID
-export const getProductsByCategoryController = async (req, res) => {
-  try {
-    const { categoryId } = req.params;
-    const products = await productModel
-      .find({ category: categoryId })
-      .populate("category");
-
-    if (products.length === 0) {
-      return res.status(404).send({
-        success: false,
-        message: "No products found for this category",
-      });
-    }
-
-    res.status(200).send({
-      success: true,
-      products,
-    });
-  } catch (error) {
-    res.status(500).send({
-      success: false,
-      message: "Error fetching products by category",
       error,
     });
   }
@@ -137,142 +246,6 @@ export const getProductByIdController = async (req, res) => {
     res.status(500).send({
       success: false,
       message: "Error fetching product",
-      error,
-    });
-  }
-};
-
-// GET - Get top 10 rated products
-export const getTopRatedProductsController = async (req, res) => {
-  try {
-    // Find the top 10 products based on ratingsAverage
-    const topRatedProducts = await productModel
-      .find()
-      .sort({ ratingsAverage: -1 }) // Sort by ratingsAverage in descending order
-      .limit(10); // Limit to 5 products
-
-    res.status(200).send({
-      success: true,
-      message: "Top 5 rated products fetched successfully",
-      products: topRatedProducts,
-    });
-  } catch (error) {
-    res.status(500).send({
-      success: false,
-      message: "Error fetching top rated products",
-      error,
-    });
-  }
-};
-
-// GET - Get top 10 new products by date
-export const getNewProductsController = async (req, res) => {
-  try {
-    const newProducts = await productModel
-      .find()
-      .sort({ createdAt: -1 }) // Sort by newest first
-      .limit(10); // Limit to 10 products
-
-    res.status(200).send({
-      success: true,
-      message: "New products fetched successfully",
-      products: newProducts,
-    });
-  } catch (error) {
-    res.status(500).send({
-      success: false,
-      message: "Error fetching new products",
-      error,
-    });
-  }
-};
-
-// GET - Get top 10 best selling products
-export const getBestSellingProductsController = async (req, res) => {
-  try {
-    const bestSellingProducts = await productModel
-      .find({ isBestSelling: true }) // Filter by isBestSelling
-      .sort({ ratingsCount: -1 }) // You could also sort by the number of sales if you have a `salesCount` field
-      .limit(10); // Limit to 10 products
-
-    res.status(200).send({
-      success: true,
-      message: "Best-selling products fetched successfully",
-      products: bestSellingProducts,
-    });
-  } catch (error) {
-    res.status(500).send({
-      success: false,
-      message: "Error fetching best-selling products",
-      error,
-    });
-  }
-};
-
-// PUT - Update a product by ID
-export const updateProductController = async (req, res) => {
-  try {
-    const {
-      name,
-      description,
-      price,
-      category,
-      tags,
-      gender,
-      sizes,
-      isOnSale,
-      salePrice,
-      isBestSelling,
-    } = req.body;
-    const images = req.files;
-
-    const product = await productModel.findById(req.params.id);
-    if (!product) {
-      return res.status(404).send({
-        success: false,
-        message: "Product not found",
-      });
-    }
-
-    // Update product details
-    product.name = name || product.name;
-    product.description = description || product.description;
-    product.price = price || product.price;
-    product.category = category || product.category;
-    product.tags - tags || product.tags;
-    product.gender = gender || product.gender;
-    product.sizes = sizes || product.sizes;
-    // product.sizes = sizes ? JSON.parse(sizes) : product.sizes;
-    product.isBestSelling =
-      isBestSelling !== undefined ? isBestSelling : product.isBestSelling;
-    product.isOnSale = isOnSale !== undefined ? isOnSale : product.isOnSale;
-    product.salePrice = salePrice || product.salePrice;
-
-    // Upload new images to Cloudinary if provided
-    if (images && images.length > 0) {
-      let uploadedImages = [];
-      for (const image of images) {
-        const file = getDataUri(image);
-        const cdb = await cloudinary.v2.uploader.upload(file.content);
-        uploadedImages.push({
-          public_id: cdb.public_id,
-          url: cdb.secure_url,
-        });
-      }
-      product.images = uploadedImages;
-    }
-
-    await product.save();
-
-    res.status(200).send({
-      success: true,
-      message: "Product updated successfully",
-      product,
-    });
-  } catch (error) {
-    res.status(500).send({
-      success: false,
-      message: "Error updating product",
       error,
     });
   }
@@ -306,6 +279,104 @@ export const deleteProductController = async (req, res) => {
     res.status(500).send({
       success: false,
       message: "Error deleting product",
+      error,
+    });
+  }
+};
+
+export const updateProductController = async (req, res) => {
+  try {
+    const {
+      name,
+      intro,
+      description,
+      price,
+      category,
+      tags,
+      gender,
+      sizes,
+      justIn,
+      popular,
+      valued,
+      adored,
+      trendy,
+      sale,
+      salePrice,
+      saleEndDate,
+    } = req.body;
+    const images = req.files;
+
+    // Find product by ID
+    const product = await productModel.findById(req.params.id);
+    if (!product) {
+      return res.status(404).send({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    if (product.name !== name) {
+      const existingProduct = await productModel.findOne({ name });
+      if (existingProduct) {
+        return res.status(400).send({
+          success: false,
+          message: "Product with this name already exists",
+        });
+      }
+    }
+
+    // Update product details
+    product.name = name || product.name;
+    product.intro = intro || product.intro;
+    product.description = description || product.description;
+    product.price = price || product.price;
+    product.category = category ? JSON.parse(category) : product.category;
+    product.tags = tags || product.tags;
+    product.gender = gender || product.gender;
+    product.sizes = sizes ? JSON.parse(sizes) : product.sizes; // Assuming sizes are passed as a JSON array
+
+    // Update highlights
+    product.highlights = {
+      justIn: justIn !== undefined ? justIn : product.highlights.justIn,
+      popular: popular !== undefined ? popular : product.highlights.popular,
+      valued: valued !== undefined ? valued : product.highlights.valued,
+      adored: adored !== undefined ? adored : product.highlights.adored,
+      trendy: trendy !== undefined ? trendy : product.highlights.trendy,
+      sale: sale !== undefined ? sale : product.highlights.sale,
+    };
+
+    // Update sale information
+    product.salePrice = salePrice || product.salePrice;
+    product.saleEndDate = saleEndDate || product.saleEndDate;
+
+    // Upload new images to Cloudinary if provided
+    if (images && images.length > 0) {
+      let uploadedImages = [];
+      for (const image of images) {
+        const file = getDataUri(image);
+        const cdb = await cloudinary.v2.uploader.upload(file.content);
+        uploadedImages.push({
+          public_id: cdb.public_id,
+          url: cdb.secure_url,
+        });
+      }
+      product.images = product.images
+        ? [...product.images, ...uploadedImages]
+        : uploadedImages;
+    }
+
+    // Save updated product
+    await product.save();
+
+    res.status(200).send({
+      success: true,
+      message: "Product updated successfully",
+      product,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error updating product",
       error,
     });
   }
@@ -363,64 +434,6 @@ export const addProductImagesController = async (req, res) => {
     res.status(200).send({
       success: true,
       message: "Image(s) added successfully",
-      product,
-    });
-  } catch (error) {
-    res.status(500).send({
-      success: false,
-      message: "Error adding image to product",
-      error,
-    });
-  }
-};
-
-// POST - add product single image
-export const addSingleProductImageController = async (req, res) => {
-  try {
-    const { productId } = req.params;
-    const image = req.file; // Use `req.file` for single image upload
-
-    // Find the product by ID
-    const product = await productModel.findById(productId);
-    if (!product) {
-      return res.status(404).send({
-        success: false,
-        message: "Product not found",
-      });
-    }
-
-    // Check if the product already has 5 images
-    if (product.images.length >= 5) {
-      return res.status(400).send({
-        success: false,
-        message: "Cannot add more than 5 images to a product",
-      });
-    }
-
-    // Check if an image was provided
-    if (!image) {
-      return res.status(400).send({
-        success: false,
-        message: "Please upload an image",
-      });
-    }
-
-    // Upload the image to Cloudinary
-    const file = getDataUri(image);
-    const uploadedImage = await cloudinary.v2.uploader.upload(file.content);
-
-    // Add the image to the product
-    product.images.push({
-      public_id: uploadedImage.public_id,
-      url: uploadedImage.secure_url,
-    });
-
-    // Save the updated product
-    await product.save();
-
-    res.status(200).send({
-      success: true,
-      message: "Image added successfully",
       product,
     });
   } catch (error) {
@@ -538,7 +551,9 @@ export const getProductReviewController = async (req, res) => {
     const { productId } = req.params.id;
 
     // Check if the product exists
-    const product = await productModel.findById(req.params.id).populate("reviews.user");
+    const product = await productModel
+      .findById(req.params.id)
+      .populate("reviews.user");
     if (!product) {
       return res.status(404).send({ error: "Product not found" });
     }

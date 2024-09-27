@@ -9,7 +9,7 @@ const paymentModel = new mongoose.Schema(
     },
     paymentType: {
       type: String,
-      enum: ["Cash", "Card", "Easypaisa", "JazzCash"],
+      enum: ["Card", "Easypaisa", "JazzCash"],
       required: true,
     },
     cardDetails: {

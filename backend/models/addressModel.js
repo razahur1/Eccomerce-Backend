@@ -14,17 +14,17 @@ const addressModel = new mongoose.Schema(
     addressLine2: {
       type: String,
     },
-    city: {
-      type: String,
-      required: true,
-    },
-    state: {
-      type: String,
-    },
     postalCode: {
       type: String,
       required: true,
     },
+    city: {
+      type: String,
+      required: true,
+    },
+    // state: {
+    //   type: String,
+    // },
     country: {
       type: String,
       required: true,
@@ -40,4 +40,3 @@ const addressModel = new mongoose.Schema(
 );
 
 export default mongoose.model("address", addressModel);
-

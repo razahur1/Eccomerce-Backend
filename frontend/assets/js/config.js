@@ -15,6 +15,26 @@ const ENDPOINTS = {
 
   GET_PROFILE: `${API_BASE_URL}/user/profile`,
   UPDATE_PROFILE: `${API_BASE_URL}/user/update-profile`,
+
+  GET_USERS: `${API_BASE_URL}/user/get-all`,
+
+  // ---------------- CATEGORY ----------------------
+
+  GET_CATEGORIES: `${API_BASE_URL}/category/get-all`,
+  ADD_CATEGORY: `${API_BASE_URL}/category/create`,
+  UPDATE_CATEGORY: `${API_BASE_URL}/category/update`,
+  DELETE_CATEGORY: `${API_BASE_URL}/category/delete`,
+
+  //---------------PRODUCT---------------------
+
+  GET_PRODUCTS: `${API_BASE_URL}/product/get-all`,
+  GET_PRODUCT: `${API_BASE_URL}/product`,
+  ADD_PRODUCT: `${API_BASE_URL}/product/create`,
+  UPDATE_PRODUCT: `${API_BASE_URL}/product/update`,
+  DELETE_PRODUCT: `${API_BASE_URL}/product/delete`,
+
+  GET_WISHLIST: `${API_BASE_URL}/wishlist/get-all`,
+  REMOVE_WISHLIST: `${API_BASE_URL}/wishlist/remove`,
 };
 
 export default ENDPOINTS;

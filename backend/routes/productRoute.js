@@ -2,10 +2,10 @@ import express from "express";
 import {
   addProductController,
   getProductsController,
-  getProductsByCategoryController,
   getProductByIdController,
   updateProductController,
   deleteProductController,
+  deleteProductImageController,
   addProductReviewController,
   getProductReviewController,
 } from "../controllers/productController.js";
@@ -20,9 +20,6 @@ router.post("/create",requireSignIn,IsAdmin,multipleUpload,addProductController)
 // GET || Get all products
 router.get("/get-all", getProductsController);
 
-// GET || Get products by category
-//router.get("/:categoryid", getProductsByCategoryController);
-
 // GET || Get a single product by ID
 router.get("/:id", getProductByIdController);
 
@@ -31,6 +28,9 @@ router.put("/update/:id",requireSignIn,IsAdmin,multipleUpload,updateProductContr
 
 // DELETE || Delete a product by ID
 router.delete("/delete/:id", requireSignIn, IsAdmin, deleteProductController);
+
+// DELETE || delete a product image
+router.delete('/:productId/delete-image/:imageId', deleteProductImageController);
 
 // GET || create product review
 router.post("/:id/review/create", requireSignIn, addProductReviewController);

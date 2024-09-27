@@ -1,9 +1,9 @@
 import nodemailer from "nodemailer";
-import emailValidator from "deep-email-validator";
+//import emailValidator from "deep-email-validator";
 
-export const isEmailValid = (email) => {
-  return emailValidator.validate(email);
-};
+// export const isEmailValid = (email) => {
+//   return emailValidator.validate(email);
+// };
 
 export const sendMail = async (to, subject, html) => {
   try {

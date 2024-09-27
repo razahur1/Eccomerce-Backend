@@ -1,4 +1,5 @@
 import categoryModel from "../models/categoryModel.js";
+import productModel from "../models/productModel.js";
 import { getDataUri } from "../helpers/dataUriHelper.js";
 import cloudinary from "../config/cloudinary.js";
 
@@ -6,27 +7,21 @@ import cloudinary from "../config/cloudinary.js";
 export const addCategoryController = async (req, res) => {
   try {
     const { name } = req.body;
-    const image = req.file;
 
     if (!name) {
       return res.status(400).send({ error: "Category name is required" });
     }
 
-    // Upload image to Cloudinary if provided
-    let imageDetails = {};
-    if (image) {
-      const file = getDataUri(image);
-
-      const cdb = await cloudinary.v2.uploader.upload(file.content);
-      imageDetails = {
-        public_id: cdb.public_id,
-        url: cdb.secure_url,
-      };
+    const existingCategory = await categoryModel.findOne({ name });
+    if (existingCategory) {
+      return res.status(400).send({
+        success: false,
+        message: "Category with this name already exists",
+      });
     }
 
     const category = await new categoryModel({
       name,
-      image: imageDetails,
     }).save();
 
     res.status(201).send({
@@ -35,6 +30,7 @@ export const addCategoryController = async (req, res) => {
       category,
     });
   } catch (error) {
+    console.error("Error creating category:", error);
     res.status(500).send({
       success: false,
       message: "Error in creating category",
@@ -43,18 +39,33 @@ export const addCategoryController = async (req, res) => {
   }
 };
 
-// GET - Get all categories
+// GET - Get all categories with product count
 export const getCategoriesController = async (req, res) => {
   try {
-    const categories = await categoryModel.find();
+    const categories = await categoryModel.find().lean(); // Fetch all categories
+
+    // Get product count for each category
+    const categoriesWithProductCount = await Promise.all(
+      categories.map(async (category) => {
+        const productCount = await productModel.countDocuments({
+          category: category._id,
+        });
+        return {
+          ...category,
+          productCount, // Add product count to the category
+        };
+      })
+    );
+
     res.status(200).send({
       success: true,
-      categories,
+      categories: categoriesWithProductCount,
     });
   } catch (error) {
+    console.error("Error fetching categories:", error);
     res.status(500).send({
       success: false,
-      message: "Error in fetching categories",
+      message: "Error fetching categories",
       error,
     });
   }
@@ -64,38 +75,20 @@ export const getCategoriesController = async (req, res) => {
 export const updateCategoryController = async (req, res) => {
   try {
     const { name } = req.body;
-    const image = req.file;
     const categoryId = req.params.id;
 
     const category = await categoryModel.findById(categoryId);
 
     if (!category) {
-      return res.status(404).send({ success: false, message: "Category not found" });
+      return res
+        .status(404)
+        .send({ success: false, message: "Category not found" });
     }
 
-    // Update name
     if (name) {
       category.name = name;
     }
 
-    // Update image
-    if (image) {
-      // Remove old image from Cloudinary
-      if (category.image.public_id) {
-        await cloudinary.v2.uploader.destroy(category.image.public_id);
-      }
-
-      // Upload new image
-      const file = getDataUri(image);
-      const result = await cloudinary.v2.uploader.upload(file.content);
-
-      category.image = {
-        public_id: result.public_id,
-        url: result.secure_url,
-      };
-    }
-
-    // Save updates
     const updatedCategory = await category.save();
 
     res.status(200).send({
@@ -104,6 +97,7 @@ export const updateCategoryController = async (req, res) => {
       category: updatedCategory,
     });
   } catch (error) {
+    console.error("Error creating category:", error);
     res.status(500).send({
       success: false,
       message: "Error updating category",
@@ -115,7 +109,8 @@ export const updateCategoryController = async (req, res) => {
 // DELETE - Delete a category by ID
 export const deleteCategoryController = async (req, res) => {
   try {
-    const category = await categoryModel.findById(req.params.id);
+    const categoryId = req.params.id;
+    const category = await categoryModel.findById(categoryId);
 
     if (!category) {
       return res.status(404).send({
@@ -124,10 +119,11 @@ export const deleteCategoryController = async (req, res) => {
       });
     }
 
-    // Remove image from Cloudinary
-    if (category.image.public_id) {
-      await cloudinary.v2.uploader.destroy(category.image.public_id);
-    }
+    // Remove the category from all products that have this category
+    await productModel.updateMany(
+      { category: categoryId },
+      { $pull: { category: categoryId } }
+    );
 
     await category.deleteOne();
 
@@ -136,6 +132,7 @@ export const deleteCategoryController = async (req, res) => {
       message: "Category deleted successfully",
     });
   } catch (error) {
+    console.error("Error creating category:", error);
     if (error.name === "CastError") {
       return res.status(500).send({
         success: false,
@@ -150,4 +147,3 @@ export const deleteCategoryController = async (req, res) => {
     });
   }
 };
-

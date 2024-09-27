@@ -13,6 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const userId = urlParams.get("userId");
   const token = urlParams.get("token");
 
+  if (!userId && !token) {
+    window.location.href = "../login/login.html";
+  }
+
   const resetPasswordForm = document.getElementById("reset-password-form");
 
   resetPasswordForm.addEventListener("submit", async (e) => {
@@ -49,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (result.success) {
         clearInputs();
         showToast("Password reset successfully.", "success");
-        window.location.href = "login.html";
+        window.location.href = "./login.html";
       } else {
         clearInputs();
         showToast(result.message, "danger");
