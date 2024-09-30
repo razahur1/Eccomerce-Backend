@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <title>Custom Tooltip</title>
+    <style>
+      .custom-tooltip {
+        position: absolute;
+        left: 110%; /* Adjusts the tooltip position to the right of the input */
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: #f8d7da; /* Tooltip background color */
+        color: #721c24; /* Tooltip text color */
+        border: 1px solid #f5c6cb; /* Tooltip border */
+        padding: 5px;
+        border-radius: 5px;
+        display: none; /* Initially hidden */
+        z-index: 1000; /* To ensure it appears above other elements */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="position-relative">
+        <input
+          type="text"
+          class="form-control"
+          id="myInput"
+          placeholder="Click for info"
+        />
+        <span class="custom-tooltip" id="tooltip"
+          >This is a tooltip message!</span
+        >
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#myInput")
+          .on("focus", function () {
+            $("#tooltip").show();
+          })
+          .on("blur", function () {
+            $("#tooltip").hide();
+          });
+      });
+    </script>
+  </body>
+</html>
