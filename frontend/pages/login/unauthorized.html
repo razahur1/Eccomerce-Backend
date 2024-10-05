@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unauthorized Access</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    class="d-flex align-items-center justify-content-center vh-100 bg-light"
+  >
+    <div class="container text-center">
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+          <div class="card shadow-lg p-4">
+            <div class="card-body">
+              <!-- Icon for a warning or lock -->
+              <div class="mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="100"
+                  height="100"
+                  fill="currentColor"
+                  class="bi bi-lock-fill text-danger"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 1a4 4 0 0 0-4 4v3H2.5A1.5 1.5 0 0 0 1 9.5v5A1.5 1.5 0 0 0 2.5 16h11A1.5 1.5 0 0 0 15 14.5v-5A1.5 1.5 0 0 0 13.5 8H12V5a4 4 0 0 0-4-4zm0 8V5a3 3 0 0 1 6 0v3H8zm-1 3a1 1 0 0 1-2 0h4a1 1 0 0 1-2 0z"
+                  />
+                </svg>
+              </div>
+
+              <h1 class="display-4 text-danger">Access Denied</h1>
+              <p class="lead mb-4">
+                Oops! You are not authorized to access this page.
+              </p>
+
+              <!-- Button to go back to homepage or login -->
+              <a
+                href="../../pages/login/login.html"
+                class="btn btn-primary btn-lg"
+                >Go to Login</a
+              >
+              <a
+                href="../../pages/home/index.html"
+                class="btn btn-outline-secondary btn-lg ms-2"
+                >Back to Homepage</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
