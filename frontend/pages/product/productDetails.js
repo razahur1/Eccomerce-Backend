@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const wishlistButton = document.getElementById("wishlist-button");
 
   if (token) {
-    let isInWishlist = await isProductInWishlist(productId);
+    var isInWishlist = await isProductInWishlist(productId);
     if (isInWishlist) {
       wishlistButton.classList.add("active");
     } else {
@@ -371,14 +371,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   document.querySelector("#add-to-cart").addEventListener("click", () => {
-    addToCart(productId, quantity, token);
+    addToCart(productId, quantity);
     quantity = 1;
     quantityInput.value = quantity;
   });
 
   // Call these functions when needed
-  window.addToCart = (productId) => addToCart(productId, token);
-  window.addToWishlist = (productId) => addToWishlist(productId, token);
+  window.addToCart = (productId) => addToCart(productId);
+  window.addToWishlist = (productId) => addToWishlist(productId);
 
   const reviewsContainer = document.getElementById("reviews-container");
 

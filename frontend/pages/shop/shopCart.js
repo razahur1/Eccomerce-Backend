@@ -6,7 +6,11 @@ import {
   hideSpinner,
   showConfirm,
   formatPrice,
+  calculateSubtotal,
+  calculateTax,
+  calculateGrandTotal,
 } from "../../assets/js/utils.js";
+import { fetchCartItem } from "../../assets/js/api.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   if (!checkUserAuth()) {
@@ -16,28 +20,15 @@ document.addEventListener("DOMContentLoaded", function () {
   const cartItemsContainer = document.getElementById("cart-items-container");
   const token = getToken();
 
-  // Fetch and display cart items
   async function fetchCart() {
-    try {
-      showSpinner();
-      const response = await fetch(ENDPOINTS.GET_CART, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (data.success) {
-        renderCartItems(data.cart.items);
-      } else {
-        cartItemsContainer.innerHTML = `<p>No items in the cart</p>`;
-      }
-    } catch (error) {
-      console.error("Error fetching cart:", error);
-    } finally {
-      hideSpinner();
+    const items = await fetchCartItem();
+    if(items.length !== 0 ){
+      renderCartItems(items);
+      updateCartSummary(items);
+    }
+    else {
+      cartItemsContainer.innerHTML = `<p>No items in the cart</p>`;
+      updateCartSummary([]);
     }
   }
 
@@ -141,6 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
         body: JSON.stringify({ productId, size, quantity }),
       });
       showToast("Cart item is successfully update", "success");
+      fetchCart();
     } catch (error) {
       console.error("Error updating cart item:", error);
     }
@@ -173,6 +165,22 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (error) {
       console.error("Error removing cart item:", error);
     }
+  }
+
+  // Function to update the cart summary display
+  function updateCartSummary(items) {
+    const subtotal = calculateSubtotal(items);
+    const tax = Math.floor(calculateTax(subtotal));
+    const grandTotal = calculateGrandTotal(subtotal, tax);
+
+    // Update the subtotal, tax, and grand total in the DOM
+    document.querySelector(".subtotal-display").textContent = `${formatPrice(
+      subtotal
+    )}`;
+    document.querySelector(".tax-display").textContent = `${formatPrice(tax)}`;
+    document.querySelector(".grand-total-display").textContent = `${formatPrice(
+      grandTotal
+    )}`;
   }
 
   // Initial fetch

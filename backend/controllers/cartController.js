@@ -123,7 +123,7 @@ export const removeFromCartController = async (req, res) => {
 // PUT - Update quantity of a cart item
 export const updateCartItemController = async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
+    const { productId, size, quantity } = req.body;
     const userId = req.user._id;
 
     // Validate quantity
@@ -142,7 +142,7 @@ export const updateCartItemController = async (req, res) => {
 
     // Find the cart item
     const cartItem = cart.items.find(
-      (item) => item.product.toString() === productId
+      (item) => item.product.toString() === productId && item.size === size
     );
 
     if (!cartItem) {
@@ -163,6 +163,60 @@ export const updateCartItemController = async (req, res) => {
     res.status(500).send({
       success: false,
       message: "Error updating cart item",
+      error,
+    });
+  }
+};
+
+// PUT - Update quantity of multiple cart items
+export const updateMulipleCartItemsController = async (req, res) => {
+  try {
+    const { items } = req.body; // Array of { productId, quantity }
+    const userId = req.user._id;
+
+    // Validate input: ensure items is an array and contains valid data
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).send({ error: "Invalid input. Provide an array of items with productId and quantity." });
+    }
+
+    // Find user's cart
+    const cart = await cartModel.findOne({ user: userId });
+
+    if (!cart) {
+      return res.status(404).send({ error: "Cart not found" });
+    }
+
+    // Iterate through each item and update its quantity
+    for (const { productId, quantity } of items) {
+      if (quantity <= 0) {
+        return res.status(400).send({ error: "Quantity must be greater than zero for all items" });
+      }
+
+      // Find the cart item
+      const cartItem = cart.items.find(
+        (item) => item.product.toString() === productId
+      );
+
+      if (!cartItem) {
+        return res.status(404).send({ error: `Product with ID ${productId} not found in cart` });
+      }
+
+      // Update the quantity
+      cartItem.quantity = quantity;
+    }
+
+    // Save the cart after updating all items
+    await cart.save();
+
+    res.status(200).send({
+      success: true,
+      message: "Cart items updated successfully",
+      cart,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error updating cart items",
       error,
     });
   }

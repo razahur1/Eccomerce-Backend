@@ -15,39 +15,51 @@ document.addEventListener("DOMContentLoaded", async () => {
       ".shortby-dropdown .dropdown-item"
     );
 
-  const fetchCategoriesFilter = async () => {
-    try {
-      const response = await fetch(ENDPOINTS.GET_CATEGORIES, {
-        method: "GET",
-        headers: {
-          "Cache-Control": "no-cache",
-        },
-        credentials: "include",
-      });
-      const result = await response.json();
-
-      categoriesList.innerHTML = result.categories
-        .map(
-          ({ _id, name, productCount }) => `
-        <li class="nav-item">
-          <a href="#" class="nav-link" data-id="${_id}">${name} <span>(${productCount})</span></a>
-        </li>`
-        )
-        .join("");
-
-      categoriesList.querySelectorAll(".nav-link").forEach((link) => {
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
-          link.classList.toggle("active");
-          updateSelectedFilters();
-          updateURLWithFilters();
+    const fetchCategoriesFilter = async () => {
+      try {
+        const response = await fetch(ENDPOINTS.GET_CATEGORIES, {
+          method: "GET",
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+          credentials: "include",
         });
-      });
-    } catch (error) {
-      showToast(error, "danger");
-    }
-  };
-
+        const result = await response.json();
+    
+        if (result.categories && Array.isArray(result.categories)) {
+          categoriesList.innerHTML = result.categories
+            .map(
+              ({ _id, name, productCount }) => `
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-id="${_id}">${name} <span>(${productCount})</span></a>
+              </li>`
+            )
+            .join("");
+    
+          categoriesList.querySelectorAll(".nav-link").forEach((link) => {
+            link.addEventListener("click", (e) => {
+              e.preventDefault();
+              
+              // Remove the 'active' class from all other category links
+              categoriesList.querySelectorAll(".nav-link").forEach((otherLink) => {
+                otherLink.classList.remove("active");
+              });
+    
+              // Add 'active' class to the clicked link
+              link.classList.add("active");
+              
+              updateSelectedFilters();
+              updateURLWithFilters();
+            });
+          });
+        } else {
+          showToast("No categories found", "warning");
+        }
+      } catch (error) {
+        showToast(error, "danger");
+      }
+    };
+    
   const updateSelectedFilters = () => {
     selectedFilters.innerHTML = "";
     const activeLinks = document.querySelectorAll(".nav-link.active"),
@@ -284,10 +296,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           }" alt="${product.name}" style="aspect-ratio:1/1;"/></a>
                  <!-- Product Actions -->
                 <div class="product-action nav justify-content-center">
-                  <a href="#" class="btn btn-primary" onclick="addToCart('${
+                  <a class="btn btn-primary" onclick="addToCart('${
                     product._id
                   }')"><i class="fi-shopping-cart"></i></a>
-                  <a href="#" class="btn btn-primary" onclick="addToWishlist('${
+                  <a  class="btn btn-primary" onclick="addToWishlist('${
                     product._id
                   }')"><i class="fi-heart"></i></a>
                   <a href="../product/product-details.html?productId=${
@@ -346,6 +358,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Call these functions when needed
   window.addToCart = (productId, quantity) =>
-    addToCart(productId, quantity, token);
-  window.addToWishlist = (productId) => addToWishlist(productId, token);
+    addToCart(productId, quantity);
+  window.addToWishlist = (productId) => addToWishlist(productId);
 });

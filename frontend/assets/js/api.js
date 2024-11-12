@@ -1,9 +1,11 @@
 import ENDPOINTS from "./config.js";
 import { showToast, showSpinner, hideSpinner } from "./utils.js";
-import { checkUserAuth } from "./auth.js";
+import { checkUserAuth, getToken } from "./auth.js";
+
+const token = getToken();
 
 // Function to add a product to the cart
-export const addToCart = async (productId, quantity = 1, token) => {
+export const addToCart = async (productId, quantity = 1) => {
   if (!checkUserAuth()) {
     showToast("Please Login First....!", "warning");
     return;
@@ -48,7 +50,7 @@ export const addToCart = async (productId, quantity = 1, token) => {
 };
 
 // Function to add a product to the wishlist
-export const addToWishlist = async (productId, token) => {
+export const addToWishlist = async (productId) => {
   if (!checkUserAuth()) {
     showToast("Please Login First....!", "warning");
     return;
@@ -75,6 +77,37 @@ export const addToWishlist = async (productId, token) => {
     }
   } catch (error) {
     showToast("Error adding product to wishlist: " + error, "danger");
+  } finally {
+    hideSpinner();
+  }
+};
+
+export const fetchCartItem = async () => {
+  if (!checkUserAuth()) {
+    showToast("Please Login First....!", "warning");
+    return;
+  }
+  try {
+    showSpinner();
+    const response = await fetch(ENDPOINTS.GET_CART, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      return data.cart.items; 
+    } else {
+      return []; 
+    }
+  } catch (error) {
+    console.error("Error fetching cart:", error);
+    return [];
   } finally {
     hideSpinner();
   }

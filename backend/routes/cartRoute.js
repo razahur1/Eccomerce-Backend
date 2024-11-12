@@ -4,6 +4,7 @@ import {
   getCartController,
   removeFromCartController,
   updateCartItemController,
+  updateMulipleCartItemsController
 } from "../controllers/cartController.js";
 import { requireSignIn } from "../middlewares/authMiddleware.js";
 
@@ -20,5 +21,8 @@ router.delete("/remove", requireSignIn, removeFromCartController);
 
 // PUT || Update cart item quantity
 router.put("/update", requireSignIn, updateCartItemController);
+
+// PUT || Update All Cart items 
+router.put("/update-all",requireSignIn, updateMulipleCartItemsController)
 
 export default router;

@@ -61,8 +61,7 @@ const ENDPOINTS = {
   GET_CART: `${API_BASE_URL}/cart/get`,
   REMOVE_FROM_CART: `${API_BASE_URL}/cart/remove`,
   UPDATE_CART: `${API_BASE_URL}/cart/update`,
-
-  
+  UPDATE_ALL_CART: `${API_BASE_URL}/cart/update-all`,
 };
 
 export default ENDPOINTS;

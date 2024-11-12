@@ -377,3 +377,21 @@ export const updatePasswordStrength = (password) => {
   passwordStrengthBar.setAttribute("aria-valuenow", strength);
   passwordStrengthBar.className = "progress-bar " + barColor; // Change bar color
 };
+
+export const calculateSubtotal = (items) => {
+  return items.reduce((total, item) => {
+    const itemPrice = item.product.highlights.sale
+      ? item.product.salePrice
+      : item.product.price;
+    return total + itemPrice * item.quantity;
+  }, 0);
+};
+
+export const calculateTax = (subtotal, taxRate = 0.1) => {
+  return subtotal * taxRate;
+};
+
+export const calculateGrandTotal = (subtotal, tax, shipping = 0) => {
+  return subtotal + tax + shipping;
+};
+
