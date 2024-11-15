@@ -14,6 +14,7 @@ import {
   hideSpinner,
   showConfirm,
 } from "../../assets/js/utils.js";
+import { fetchAddresses } from "../../assets/js/api.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   if (!checkUserAuth()) {
@@ -30,115 +31,86 @@ document.addEventListener("DOMContentLoaded", () => {
   const addressForm = document.getElementById("addEditAddressForm");
   const addressCardSection = document.getElementById("addressCardSection");
   const addressFormHeading = document.getElementById("addressFormTitle");
+  const addressFormBtn = document.getElementById("addressFormBtn");
 
-  // Fetch and display all addresses
-  async function fetchAddresses() {
-    try {
-      showSpinner();
-      const response = await fetch(ENDPOINTS.GET_ADDRESSES, {
-        method: "GET",
-        headers: {
-          "Cache-Control": "no-cache",
-          Authorization: token,
-        },
-        credentials: "include",
-      });
 
-      const result = await response.json();
-      console.log(result);
-
-      if (result.success) {
-        if (result.addresses.length > 0) {
-          addressCardSection.innerHTML = result.addresses
-            .map(
-              (address) => `
-              <div class="col-lg-6">
-                <div class="card mb-5" id="addressCard${address._id}">
-                  <div class="card-header position-relative py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="m-0">Billing Address</h5>
-                    ${
-                      address.isDefault
-                        ? '<span class="badge bg-info">Primary</span>'
-                        : ""
-                    }
-                    <div>
-                      <button
-                        class="btn btn-sm btn-warning"
-                        onclick="editAddress('${address._id}', '${
-                address.addressLine1
-              }', '${address.addressLine2 || ""}', '${address.postalCode}', '${
-                address.city
-              }', '${address.country}', ${address.isDefault})"
-                      >
-                        <i class="fas fa-edit"></i>
-                      </button>
-                      <a
-                        class="btn btn-sm btn-danger"
-                        href="#"
-                        role="button"
-                        onclick="deleteAddress('${address._id}')"
-                      >
-                        <i class="bi bi-trash"></i>
-                      </a>
-                    </div>
-                  </div>
-                  <div class="card-body">
-                    <table class="table">
-                      <tbody>
-                        <tr>
-                          <td>
-                            <p class="m-0">
-                              ${address.addressLine1}, <br/> 
-                              ${
-                                address.addressLine2
-                                  ? `${address.addressLine2},`
-                                  : ""
-                              }
-                              ${address.postalCode} <br />
-                              ${address.city}<br />
-                              ${address.country}<br />
-                            </p>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            `
-            )
-            .join("");
-        } else {
-          addressCardSection.innerHTML = `
-          <div class="text-center my-5">
-            <div class="mb-3">
-              <i class="fas fa-credit-card fa-3x text-muted"></i>
-            </div>
-            <hr>
-            <h5 class="text-muted">No Shipping Address Found</h5>
-            <p class="text-secondary">It looks like you haven't added any shipping address yet. Add a new address to get started!</p>
-          </div>
-        `;
-        }
-      } else {
-        showToast("Failed to fetch addresses", "danger");
-      }
-    } catch (error) {
-      console.error("Error fetching addresses:", error);
-      showToast("An error occurred while fetching addresses", "danger");
-    } finally {
-      hideSpinner();
+  async function fetchAddress() {
+    const addresses = await fetchAddresses();
+    if (addressCardSection.length !== 0) {
+      renderAddress(addresses);
+    } else {
+      addressCardSection.innerHTML = `
+      <div class="text-center my-5">
+        <div class="mb-3">
+          <i class="fas fa-credit-card fa-3x text-muted"></i>
+        </div>
+        <hr>
+        <h5 class="text-muted">No Shipping Address Found</h5>
+        <p class="text-secondary">It looks like you haven't added any shipping address yet. Add a new address to get started!</p>
+      </div>
+    `;
     }
   }
 
-  // Call the function to load addresses on page load
-  fetchAddresses();
+  // Function to render addresses to the DOM
+  function renderAddress(addresses) {
+      addressCardSection.innerHTML = addresses
+        .map(
+          (address) => `
+        <div class="col-lg-6">
+          <div class="card mb-5" id="addressCard${address._id}">
+            <div class="card-header position-relative py-3 d-flex justify-content-between align-items-center">
+              <h5 class="m-0">Billing Address</h5>
+              ${address.isDefault ? '<span class="badge bg-info">Primary</span>': ""}
+              <div>
+                <button
+                  class="btn btn-sm btn-warning"
+                  onclick="editAddress('${address._id}','${address.firstName}','${address.lastName}','${address.addressLine1}', '${address.addressLine2 || ""}', '${address.postalCode}', '${address.city}', '${address.country}', ${address.isDefault})">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <a
+                  class="btn btn-sm btn-danger"
+                  href="#"
+                  role="button"
+                  onclick="deleteAddress('${address._id}')"
+                >
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
+            </div>
+            <div class="card-body">
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <td>
+                      <p class="m-0">
+                        ${address.firstName} ${address.lastName}, <br/>
+                        ${address.addressLine1}, <br/> 
+                        ${address.addressLine2 ? `${address.addressLine2},` : ""}
+                        ${address.postalCode} <br />
+                        ${address.city}, ${address.country}
+                      </p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `
+        )
+        .join("");
+  }
+
+  fetchAddress();
 
   // Add or update address logic
   addressForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const addressId = document.getElementById("addressId")?.value;
+    const firstName = document.getElementById("address-firstName").value.trim();
+    const lastName = document.getElementById("address-lastName").value.trim();
     const line1 = document.getElementById("address-line1").value.trim();
     const line2 = document.getElementById("address-line2").value.trim();
     const zip = document.getElementById("address-zip").value.trim();
@@ -148,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     clearErrors();
 
-    if (!line1 || !city || !zip || !country) {
+    if (!firstName || !lastName || !line1 || !city || !zip || !country) {
       showError("address-error", "All fields are required.");
       return;
     }
@@ -169,6 +141,8 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         credentials: "include",
         body: JSON.stringify({
+          firstName: firstName,
+          lastName: lastName,
           addressLine1: line1,
           addressLine2: line2,
           postalCode: zip,
@@ -181,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (result.success) {
         showToast(addressId ? "Address updated" : "Address added", "success");
-        fetchAddresses();
+        fetchAddress();
         clearInputs();
         hideAddressForm();
       } else {
@@ -201,6 +175,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Edit address
   window.editAddress = function (
     id,
+    firstName,
+    lastName,
     line1,
     line2,
     zip,
@@ -209,6 +185,8 @@ document.addEventListener("DOMContentLoaded", () => {
     primary
   ) {
     document.getElementById("addressId").value = id;
+    document.getElementById("address-firstName").value = firstName;
+    document.getElementById("address-lastName").value = lastName;
     document.getElementById("address-line1").value = line1;
     document.getElementById("address-line2").value = line2;
     document.getElementById("address-zip").value = zip;
@@ -216,6 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("address-country").value = country;
     document.getElementById("address-primary").checked = primary;
     addressFormHeading.innerText = "Edit Address";
+    addressFormBtn.innerText = "Update Address";
     showAddressForm();
   };
 
@@ -238,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json();
         if (result.success) {
           showToast("Address deleted successfully", "success");
-          fetchAddresses();
+          fetchAddress();
         } else {
           showToast(result.message, "danger");
         }
@@ -265,7 +244,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Reset form for adding a new address
   window.addAddress = function () {
     addressForm.reset();
-    addressFormHeading.innerText = "Add New Address"; // Update title for adding new address
+    addressFormHeading.innerText = "Add New Address";
+    addressFormBtn.innerText = "Save Address"
     showAddressForm();
   };
 });

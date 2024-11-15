@@ -521,7 +521,7 @@
                     </div>
                     <div class="col-sm-6 text-sm-end">
                       <a href="#" class="underline" onclick="addAddress()">
-                        <i class="bi bi-plus-circle"></i> Add new address
+                        <i class="bi bi-plus-circle"></i> Add new address 
                       </a>
                     </div>
                   </div>
@@ -543,50 +543,29 @@
                     <form id="addEditAddressForm">
                       <div class="row g-3">
                         <input type="hidden" id="addressId" />
+                        <div class="col-sm-6">
+                          <label class="form-label" for="address-firstName"
+                            >First Name</label
+                          >
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="address-firstName"
+                            required
+                          />
+                        </div>
+                        <div class="col-sm-6">
+                          <label class="form-label" for="address-lastName"
+                            >Last Name</label
+                          >
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="address-lastName"
+                            required
+                          />
+                        </div>
                         <div class="col-sm-12">
-                          <label class="form-label" for="address-line1"
-                            >Line 1</label
-                          >
-                          <input
-                            class="form-control"
-                            type="text"
-                            id="address-line1"
-                            required
-                          />
-                        </div>
-                        <div class="col-sm-6">
-                          <label class="form-label" for="address-line2"
-                            >Line 2</label
-                          >
-                          <input
-                            class="form-control"
-                            type="text"
-                            id="address-line2"
-                          />
-                        </div>
-                        <div class="col-sm-6">
-                          <label class="form-label" for="address-zip"
-                            >ZIP code</label
-                          >
-                          <input
-                            class="form-control"
-                            type="text"
-                            id="address-zip"
-                            required
-                          />
-                        </div>
-                        <div class="col-sm-6">
-                          <label class="form-label" for="address-city"
-                            >City</label
-                          >
-                          <input
-                            class="form-control"
-                            type="text"
-                            id="address-city"
-                            required
-                          />
-                        </div>
-                        <div class="col-sm-6">
                           <label class="form-label" for="address-country"
                             >Country</label
                           >
@@ -606,6 +585,49 @@
                             <option value="Pakistan">Pakistan</option>
                           </select>
                         </div>
+                        <div class="col-sm-12">
+                          <label class="form-label" for="address-line1"
+                            >Address Line 1</label
+                          >
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="address-line1"
+                            required
+                          />
+                        </div>
+                        <div class="col-sm-12">
+                          <label class="form-label" for="address-line2"
+                            >Address Line 2</label
+                          >
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="address-line2"
+                          />
+                        </div>
+                        <div class="col-sm-6">
+                          <label class="form-label" for="address-city"
+                            >City</label
+                          >
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="address-city"
+                            required
+                          />
+                        </div>
+                        <div class="col-sm-6">
+                          <label class="form-label" for="address-zip"
+                            >ZIP code</label
+                          >
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="address-zip"
+                            required
+                          />
+                        </div>
                         <div class="col-12">
                           <div class="form-check">
                             <input
@@ -621,7 +643,7 @@
                           </div>
                         </div>
                         <div class="col-12">
-                          <button type="submit" class="btn btn-primary">
+                          <button type="submit" class="btn btn-primary" id="addressFormBtn">
                             Add New Address
                           </button>
                         </div>

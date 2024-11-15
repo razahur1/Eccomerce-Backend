@@ -88,7 +88,6 @@ export const fetchCartItem = async () => {
     return;
   }
   try {
-    showSpinner();
     const response = await fetch(ENDPOINTS.GET_CART, {
       method: "GET",
       headers: {
@@ -108,7 +107,35 @@ export const fetchCartItem = async () => {
   } catch (error) {
     console.error("Error fetching cart:", error);
     return [];
-  } finally {
-    hideSpinner();
-  }
+  } 
 };
+
+
+export const fetchAddresses = async () =>{
+  if (!checkUserAuth()) {
+    showToast("Please Login First....!", "warning");
+    return;
+  }
+  try {
+    const response = await fetch(ENDPOINTS.GET_ADDRESSES, {
+      method: "GET",
+      headers: {
+        "Cache-Control": "no-cache",
+        Authorization: token,
+      },
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      return data.addresses; 
+    } else {
+      return []; 
+    }
+  } catch (error) {
+    console.error("Error fetching cart:", error);
+    return [];
+  }
+}
+

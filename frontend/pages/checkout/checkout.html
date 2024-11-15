@@ -12,6 +12,15 @@
     <title>Siyah</title>
     <link rel="shortcut icon" href="../../assets/img/favicon.ico" />
     <link href="../../assets/css/style.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/css/intlTelInput.css"
+    />
+    <style>
+      .input-error {
+        border: 1px solid red;
+      }
+    </style>
   </head>
 
   <body>
@@ -426,121 +435,215 @@
             <div class="row align-items-start">
               <div class="col-md-7">
                 <form>
-                  <h6 class="mb-4 h3">Billing Details</h6>
-                  <div class="row mb-5 gy-4">
-                    <div class="col-12 col-md-6">
-                      <label
-                        class="form-label"
-                        for="checkout_Billing_First_Name"
-                        >First Name</label
+                  <h6 class="mb-4 h3">Contact Details</h6>
+                  <div class="mb-3 p-2">
+                    <div class="col-sm-12 mb-3">
+                      <label class="form-label" for="checkout-mobileNumber"
+                        >Mobile Phone *</label
                       >
                       <input
                         class="form-control"
-                        id="checkout_Billing_First_Name"
-                        type="text"
-                        placeholder="First Name"
-                        required=""
-                      />
-                    </div>
-                    <div class="col-12 col-md-6">
-                      <label class="form-label" for="checkout_BillingLast_Name"
-                        >Last Name</label
-                      >
-                      <input
-                        class="form-control"
-                        id="checkout_BillingLast_Name"
-                        type="text"
-                        placeholder="Last Name"
-                        required=""
-                      />
-                    </div>
-                    <div class="col-12">
-                      <label class="form-label" for="checkout_Billing_Email"
-                        >Email</label
-                      >
-                      <input
-                        class="form-control"
-                        id="checkout_Billing_Email"
-                        type="email"
-                        placeholder="Email"
-                        required=""
-                      />
-                    </div>
-                    <div class="col-12">
-                      <label class="form-label" for="checkout_Billing_Country"
-                        >Country</label
-                      >
-                      <input
-                        class="form-control"
-                        id="checkout_Billing_Country"
-                        type="text"
-                        placeholder="Country"
-                        required=""
-                      />
-                    </div>
-                    <div class="col-12">
-                      <label class="form-label" for="checkout_Billing_Address"
-                        >Address Line 1</label
-                      >
-                      <input
-                        class="form-control"
-                        id="checkout_Billing_Address"
-                        type="text"
-                        placeholder="Address Line 1"
-                        required=""
-                      />
-                    </div>
-                    <div class="col-12">
-                      <label
-                        class="form-label"
-                        for="checkout_Billing_Address_Two"
-                        >Address Line 2</label
-                      >
-                      <input
-                        class="form-control"
-                        id="checkout_Billing_Address_Two"
-                        type="text"
-                        placeholder="Address Line 2 (optional)"
-                      />
-                    </div>
-                    <div class="col-12 col-md-6">
-                      <label class="form-label" for="checkout_Billing_Town"
-                        >City</label
-                      >
-                      <input
-                        class="form-control"
-                        id="checkout_Billing_Town"
-                        type="text"
-                        placeholder="Town / City"
-                        required=""
-                      />
-                    </div>
-                    <div class="col-12 col-md-6">
-                      <label class="form-label" for="checkout_Billing_ZIP"
-                        >Postcode</label
-                      >
-                      <input
-                        class="form-control"
-                        id="checkout_Billing_ZIP"
-                        type="text"
-                        placeholder="ZIP / Postcode"
-                        required=""
-                      />
-                    </div>
-                    <div class="col-12">
-                      <label class="form-label" for="checkoutBillingPhone"
-                        >Mobile Phone</label
-                      >
-                      <input
-                        class="form-control"
-                        id="checkoutBillingPhone"
+                        id="checkout-mobileNumber"
                         type="tel"
                         placeholder="Mobile Phone"
-                        required=""
+                        required
+                        
                       />
+                      
                     </div>
                   </div>
-                  <h6 class="mb-4 h3">Shipping Details</h6>
+                  <h6 class="mb-4 h3">Delivery</h6>
+                  <div class="accordion accordion-alt" id="address-options">
+                    <!-- Saved Address Option -->
+                    <div class="card mb-3 shadow-none border">
+                      <div
+                        class="card-header p-0 position-relative bg-transparent"
+                      >
+                        <div
+                          class="form-check m-3 collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#savedAddressesCollapse"
+                          aria-expanded="false"
+                        >
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="addressOptions"
+                            id="savedAddresses"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#savedAddressesCollapse"
+                            aria-expanded="false"
+                          />
+                          <label
+                            class="form-check-label m-0 stretched-link"
+                            for="savedAddresses"
+                          >
+                            Use Saved Address
+                          </label>
+                        </div>
+                      </div>
+                      <div
+                        class="collapse"
+                        id="savedAddressesCollapse"
+                        data-bs-parent="#address-options"
+                      >
+                        <div
+                          id="savedAddressContainer"
+                          class="card-body p-4 border rounded"
+                        ></div>
+                      </div>
+                    </div>
+
+                    <!-- Add New Address Option -->
+                    <div class="card mb-3 shadow-none border">
+                      <div
+                        class="card-header p-0 position-relative bg-transparent"
+                      >
+                        <div
+                          class="form-check m-3 collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#addNewAddressCollapse"
+                          aria-expanded="false"
+                        >
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="addressOptions"
+                            id="addNewAddress"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#addNewAddressCollapse"
+                            aria-expanded="false"
+                          />
+                          <label
+                            class="form-check-label m-0 stretched-link"
+                            for="addNewAddress"
+                          >
+                            Add New Address
+                          </label>
+                        </div>
+                      </div>
+                      <div
+                        class="collapse"
+                        id="addNewAddressCollapse"
+                        data-bs-parent="#address-options"
+                      >
+                        <div class="card-body p-3">
+                          <!-- Add New Address Form -->
+                          <form>
+                            <div class="row mb-5 gy-4">
+                              <div class="col-12 col-md-6">
+                                <label
+                                  class="form-label"
+                                  for="checkout-firstName"
+                                  >First Name *</label
+                                >
+                                <input
+                                  class="form-control"
+                                  id="checkout-firstName"
+                                  type="text"
+                                  placeholder="First Name"
+                                  required
+                                />
+                              </div>
+                              <div class="col-12 col-md-6">
+                                <label
+                                  class="form-label"
+                                  for="checkout-lastName"
+                                  >Last Name *</label
+                                >
+                                <input
+                                  class="form-control"
+                                  id="checkout-lastName"
+                                  type="text"
+                                  placeholder="Last Name"
+                                  required
+                                />
+                              </div>
+                              <div class="col-12">
+                                <label class="form-label" for="checkout-country"
+                                  >Country *</label
+                                >
+                                <input
+                                  class="form-control"
+                                  id="checkout-country"
+                                  type="text"
+                                  placeholder="Country"
+                                  required
+                                />
+                              </div>
+                              <div class="col-12">
+                                <label
+                                  class="form-label"
+                                  for="checkout-addressLine1"
+                                  >Address Line 1 *</label
+                                >
+                                <input
+                                  class="form-control"
+                                  id="checkout-addressLine1"
+                                  type="text"
+                                  placeholder="Address Line 1"
+                                  required
+                                />
+                              </div>
+                              <div class="col-12">
+                                <label
+                                  class="form-label"
+                                  for="checkout-addressLine2"
+                                  >Address Line 2</label
+                                >
+                                <input
+                                  class="form-control"
+                                  id="checkout-addressLine2"
+                                  type="text"
+                                  placeholder="Address Line 2 (optional)"
+                                />
+                              </div>
+                              <div class="col-12 col-md-6">
+                                <label class="form-label" for="checkout-city"
+                                  >Town / City *</label
+                                >
+                                <input
+                                  class="form-control"
+                                  id="checkout-city"
+                                  type="text"
+                                  placeholder="Town / City"
+                                  required
+                                />
+                              </div>
+                              <div class="col-12 col-md-6">
+                                <label
+                                  class="form-label"
+                                  for="checkout-postalCode"
+                                  >ZIP / Postcode *</label
+                                >
+                                <input
+                                  class="form-control"
+                                  id="checkout-postalCode"
+                                  type="text"
+                                  placeholder="ZIP / Postcode"
+                                  required
+                                />
+                              </div>
+                            </div>
+                            <div class="form-check">
+                              <input
+                                type="checkbox"
+                                class="form-check-input"
+                                id="checkout-saveAddress"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="checkout-saveAddress"
+                              >
+                                Save this address for next time ?
+                              </label>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <h6 class="mb-4 h3">Shipping Method</h6>
                   <div class="table-responsive mb-6">
                     <table class="table table-bordered table-hover mb-0">
                       <tbody>
@@ -561,7 +664,7 @@
                             </div>
                           </td>
                           <td>Delivery in 5 - 7 working days</td>
-                          <td>$8.00</td>
+                          <td>Rs.300</td>
                         </tr>
                         <tr>
                           <td>
@@ -580,144 +683,10 @@
                             </div>
                           </td>
                           <td>Delivery in 3 - 5 working days</td>
-                          <td>$12.00</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="form-check">
-                              <input
-                                class="form-check-input"
-                                name="shipping"
-                                type="radio"
-                                id="checkoutShippingShort"
-                              />
-                              <label
-                                class="form-check-label"
-                                for="checkoutShippingShort"
-                                >1 - 2 Shipping</label
-                              >
-                            </div>
-                          </td>
-                          <td>Delivery in 1 - 2 working days</td>
-                          <td>$18.00</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="form-check">
-                              <input
-                                class="form-check-input"
-                                name="shipping"
-                                type="radio"
-                                id="checkoutShippingFree"
-                              />
-                              <label
-                                class="form-check-label"
-                                for="checkoutShippingFree"
-                                >Free Shipping</label
-                              >
-                            </div>
-                          </td>
-                          <td>
-                            Living won't the He one every subdue meat replenish
-                            face was you morning firmament darkness.
-                          </td>
-                          <td>$0.00</td>
+                          <td>Rs.200</td>
                         </tr>
                       </tbody>
                     </table>
-                  </div>
-                  <div class="mb-5">
-                    <div class="form-check">
-                      <input
-                        class="form-check-input"
-                        id="checkout_Shipping_Address"
-                        type="checkbox"
-                      />
-                      <label
-                        class="form-check-label"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#checkout_Shipping_AddressCollapse"
-                        for="checkout_Shipping_Address"
-                        >Ship to a different address?</label
-                      >
-                    </div>
-                    <div
-                      class="collapse"
-                      id="checkout_Shipping_AddressCollapse"
-                    >
-                      <div class="row gy-4 pt-3">
-                        <div class="col-12">
-                          <label
-                            class="form-label"
-                            for="checkout_Shipping_Address_Country"
-                            >Country</label
-                          >
-                          <input
-                            class="form-control"
-                            id="checkout_Shipping_Address_Country"
-                            type="text"
-                            placeholder="Country"
-                          />
-                        </div>
-                        <div class="col-12">
-                          <label
-                            class="form-label"
-                            for="checkout_Shipping_AddressLine_One"
-                            >Address Line 1</label
-                          >
-                          <input
-                            class="form-control"
-                            id="checkout_Shipping_AddressLine_One"
-                            type="text"
-                            placeholder="Address Line 1"
-                          />
-                        </div>
-                        <div class="col-12">
-                          <label
-                            class="form-label"
-                            for="checkout_Shipping_AddressLine_Two"
-                            >Address Line 2</label
-                          >
-                          <input
-                            class="form-control"
-                            id="checkout_Shipping_AddressLine_Two"
-                            type="text"
-                            placeholder="Address Line 2 (optional)"
-                          />
-                        </div>
-                        <div class="col-6">
-                          <label
-                            class="form-label"
-                            for="checkout_Shipping_Address_Town"
-                            >City</label
-                          >
-                          <input
-                            class="form-control"
-                            id="checkout_Shipping_Address_Town"
-                            type="text"
-                            placeholder="City"
-                          />
-                        </div>
-                        <div class="col-6">
-                          <label
-                            class="form-label"
-                            for="checkout_Shipping_Address_ZIP"
-                            >Postcode</label
-                          >
-                          <input
-                            class="form-control"
-                            id="checkout_Shipping_Address_ZIP"
-                            type="text"
-                            placeholder="Postcode"
-                          />
-                        </div>
-                        <div class="col-12">
-                          <button class="btn btn-outline-mode" type="submit">
-                            Save Address
-                          </button>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                   <h6 class="mb-4 h3">Payment</h6>
                   <div class="list-group mb-5 accordion" id="payment-methods">
@@ -725,142 +694,84 @@
                       <div class="form-check mb-0">
                         <input
                           class="form-check-input collapsed"
-                          id="checkout_Payment_Card"
+                          id="checkout_Payfast"
                           name="payment"
+                          value="payfast"
                           type="radio"
                           data-bs-toggle="collapse"
                           data-bs-action="show"
-                          data-bs-target="#checkout_Payment_CardCollapse"
+                          data-bs-target="#checkout_Payment_PayfastCollapse"
                         />
                         <label
-                          class="form-check-label fw-500 stretched-link"
-                          for="checkout_Payment_Card"
-                          >Credit Card
-                          <img
-                            class="ml-2"
-                            src="../../assets/img/cart/cards.svg"
-                            alt="..."
-                          />
+                          class="form-check-label fw-500 stretched-link d-flex justify-content-between align-items-center"
+                          for="checkout_Payfast"
+                        >
+                          PAYFAST (Pay via Debit/Credit/Wallet/Bank Account)
+                          <div class="d-flex justify-content-end">
+                            <img
+                              class="img-fluid"
+                              src="../../assets/img/flags/cards.png"
+                              alt="Visa"
+                              style="max-width: 120px"
+                            />
+                          </div>
                         </label>
                       </div>
                     </div>
                     <div
                       class="list-group-item py-0 collapse"
-                      id="checkout_Payment_CardCollapse"
+                      id="checkout_Payment_PayfastCollapse"
                       data-bs-parent="#payment-methods"
                     >
-                      <div class="row py-4 g-3">
-                        <div class="col-12">
-                          <input
-                            class="form-control"
-                            id="checkout_Payment_CardNumber"
-                            type="text"
-                            placeholder="Card Number *"
-                            required=""
-                          />
-                        </div>
-                        <div class="col-12">
-                          <input
-                            class="form-control"
-                            id="checkout_Payment_CardName"
-                            type="text"
-                            placeholder="Name on Card *"
-                            required=""
-                          />
-                        </div>
-                        <div class="col-12 col-md-4">
-                          <select class="form-select" id="checkoutPaymentMonth">
-                            <option>January</option>
-                            <option>February</option>
-                            <option>March</option>
-                            <option>April</option>
-                            <option>May</option>
-                            <option>June</option>
-                            <option>July</option>
-                            <option>August</option>
-                            <option>September</option>
-                            <option>October</option>
-                            <option>November</option>
-                            <option>December</option>
-                          </select>
-                        </div>
-                        <div class="col-12 col-md-4">
-                          <select
-                            class="form-select"
-                            id="checkout_Payment_CardYear"
-                          >
-                            <option>2017</option>
-                            <option>2018</option>
-                            <option>2019</option>
-                          </select>
-                        </div>
-                        <div class="col-12 col-md-4">
-                          <div class="input-group input-group-merge">
-                            <input
-                              class="form-control"
-                              id="checkout_Payment_CardCVV"
-                              type="text"
-                              placeholder="CVV *"
-                              required=""
-                            />
-                            <div class="input-group-append">
-                              <span
-                                class="input-group-text"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="top"
-                                aria-label="The CVV Number on your credit card or debit card is a 3 digit number on VISA, MasterCard and Discover branded credit and debit cards."
-                                data-bs-original-title="The CVV Number on your credit card or debit card is a 3 digit number on VISA, MasterCard and Discover branded credit and debit cards."
-                              >
-                                <i class="bi bi-info-circle"></i>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
+                      <div class="p-3 text-center">
+                        <img
+                          class="m-2"
+                          src="../../assets/img/flags/wallet.png"
+                          alt="..."
+                        />
+                        <p class="mb-0 text-body">
+                          After clicking “Pay now”, you will be redirected to
+                          PAYFAST(Pay via Debit/Credit/Wallet/Bank Account) to
+                          complete your purchase securely.
+                        </p>
                       </div>
                     </div>
                     <div class="list-group-item py-3">
                       <div class="form-check mb-0">
                         <input
                           class="form-check-input collapsed"
-                          id="checkout_Payment_Paypal"
+                          id="checkout_Payment_COD"
                           name="payment"
+                          value="cod"
                           type="radio"
                           data-bs-toggle="collapse"
                           data-bs-action="hide"
-                          data-bs-target="#checkout_Payment_PayPalCollapse"
+                          data-bs-target="#checkout_Payment_CODCollapse"
                         />
                         <label
-                          class="form-check-label stretched-link"
-                          for="checkout_Payment_Paypal"
+                          class="form-check-label fw-500 stretched-link"
+                          for="checkout_Payment_COD"
                         >
-                          <img
-                            src="../../assets/img/cart/paypal.svg"
-                            alt="..."
-                          />
+                          Cash on Delivery (COD)
                         </label>
                       </div>
                     </div>
                     <div
                       class="list-group-item py-0 collapse"
-                      id="checkout_Payment_PayPalCollapse"
+                      id="checkout_Payment_CODCollapse"
                       data-bs-parent="#payment-methods"
                     >
                       <div class="p-3">
                         <p class="mb-0 text-body">
-                          By clicking on the button below you will be redirected
-                          to your PayPal account to complete the payment.
+                          Easily Pay For Your Orders At Your Own Doorstep in
+                          Pakistan.<br />
+                          Orders which are to be delivered out of Pakistan need
+                          to be fully paid in advance via Credit/Debit Card
+                          option.
                         </p>
                       </div>
                     </div>
                   </div>
-                  <label class="form-label" for="checkout_Billing_First_Name"
-                    >Order Notes (optional)</label
-                  >
-                  <textarea
-                    class="form-control mb-4 mb-md-0 font-size-xs"
-                    rows="5"
-                    placeholder="Order Notes"
-                  ></textarea>
                 </form>
               </div>
               <div
@@ -875,31 +786,35 @@
                         class="list-group-item d-flex bg-transparent px-0 py-3"
                       >
                         <span>Subtotal</span>
-                        <span class="ms-auto">$89.00</span>
+                        <span class="ms-auto subtotal-display">$89.00</span>
                       </li>
                       <li
                         class="list-group-item d-flex bg-transparent px-0 py-3"
                       >
                         <span>Tax</span>
-                        <span class="ms-auto">$00.00</span>
+                        <span class="ms-auto tax-display">$00.00</span>
                       </li>
                       <li
                         class="list-group-item d-flex bg-transparent px-0 py-3"
                       >
                         <span>Shipping</span>
-                        <span class="ms-auto">$10.00</span>
+                        <span class="ms-auto shipping-display">$10.00</span>
                       </li>
                       <li
                         class="list-group-item d-flex bg-transparent px-0 py-3 fs-lg fw-600"
                       >
                         <span>Total</span>
-                        <span class="ms-auto">$99.00</span>
+                        <span class="ms-auto grand-total-display">$99.00</span>
                       </li>
                     </ul>
                   </div>
                 </div>
                 <div class="pt-4">
-                  <button type="submit" class="btn btn-primary w-100">
+                  <button
+                    type="submit"
+                    id="placeOrderButton"
+                    class="btn btn-primary w-100"
+                  >
                     Place Order
                   </button>
                   <p class="m-0 pt-3">
@@ -1081,6 +996,7 @@
     <script src="../../assets/js/custom.js"></script>
     <script src="../../assets/js/theme.js"></script>
     <script src="../../assets/js/color-modes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@24.6.0/build/js/intlTelInput.min.js"></script>
 
     <script type="module" src="./checkout.js"></script>
   </body>

@@ -7,6 +7,14 @@ const addressModel = new mongoose.Schema(
       required: true,
       ref: "users",
     },
+    firstName:{
+      type: String,
+      required: true,
+    },
+    lastName:{
+      type: String,
+      required: true,
+    },
     addressLine1: {
       type: String,
       required: true,

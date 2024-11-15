@@ -4,6 +4,8 @@ import addressModel from "../models/addressModel.js";
 export const createAddressController = async (req, res) => {
   try {
     const {
+      firstName,
+      lastName,
       addressLine1,
       addressLine2,
       city,
@@ -22,6 +24,8 @@ export const createAddressController = async (req, res) => {
 
     const address = await new addressModel({
       user: req.user._id,
+      firstName,
+      lastName,
       addressLine1,
       addressLine2,
       city,
@@ -129,6 +133,8 @@ export const getAddressByIdController = async (req, res) => {
 export const updateAddressController = async (req, res) => {
   try {
     const {
+      firstName,
+      lastName,
       addressLine1,
       addressLine2,
       city,
@@ -160,6 +166,8 @@ export const updateAddressController = async (req, res) => {
       );
     }
 
+    address.firstName = firstName || address.firstName;
+    address.lastName = lastName || address.lastName;
     address.addressLine1 = addressLine1 || address.addressLine1;
     address.addressLine2 = addressLine2 || address.addressLine2;
     address.city = city || address.city;
