@@ -7,6 +7,7 @@ import {
   renderStars,
   renderSizeOptions,
   formatPrice,
+  validateCustomSizeChart,
 } from "../../assets/js/utils.js";
 import { addToCart, addToWishlist } from "../../assets/js/api.js";
 
@@ -31,7 +32,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     const data = await response.json();
-    console.log(data);
     if (data.success) {
       return data.isInWishlist; // Return whether the product is in the wishlist
     }
@@ -114,7 +114,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (result.success) {
         const product = result.product;
-        console.log(product);
         displayProduct(product);
       } else {
         showToast(result.message, "warning");
@@ -165,24 +164,40 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Clear existing size options before rendering new ones
     sizeContainer.innerHTML = ""; // Clear existing sizes
-
     // Render sizes with radio buttons
     product.sizes.forEach((size, _id) => {
       sizeContainer.innerHTML += `
-  <div class="form-check radio-text form-check-inline position-relative">
-    <input class="form-check-input" type="radio" name="size_${
-      product._id
-    }" id="size_${size._id}" value="${size.size}" ${
+    <div class="form-check radio-text form-check-inline position-relative">
+      <input class="form-check-input" type="radio" name="size_${
+        product._id
+      }" id="size_${size._id}" value="${size.size}" ${
         _id === 0 ? "checked" : ""
       } ${size.stock === 0 ? "disabled" : ""}>
-    <label class="radio-text-label" for="size_${size._id}">${size.size}</label>
-    ${
-      size.stock === 0
-        ? `<span class="position-absolute top-50 start-0 w-100" style="height: 1px; background-color: rgb(247, 83, 83); transform: rotate(-45deg);"></span>`
-        : ""
-    }
-  </div>`;
+      <label class="radio-text-label" for="size_${size._id}">${
+        size.size
+      }</label>
+      ${
+        size.stock === 0
+          ? `<span class="position-absolute top-50 start-0 w-100" style="height: 1px; background-color: rgb(247, 83, 83); transform: rotate(-45deg);"></span>`
+          : ""
+      }
+    </div>`;
     });
+
+    // Add Custom Size option
+    sizeContainer.innerHTML += `
+  <div class="form-check radio-text form-check-inline position-relative">
+     <input
+        class="form-check-input"
+        type="radio"
+        name="size_${productId}"
+        id="custom_size_${productId}" // Unique ID for custom size
+        value="CUSTOM"
+        data-bs-toggle="modal"
+        data-bs-target="#px_custom_size_chart_modal"
+      />
+      <label class="radio-text-label" for="custom_size_${productId}" style="font-size: 8px; padding: 3px; text-align:center">CUSTOM <br/> SIZE</label>
+  </div>`;
 
     // Set initial selected size based on the default checked size
     const initialSize = document.querySelector(
@@ -375,6 +390,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     quantity = 1;
     quantityInput.value = quantity;
   });
+
+  document
+    .querySelector("#px_custom_size_chart_modal form")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const { isValid, formData } = validateCustomSizeChart(
+        "px_custom_size_chart_modal"
+      );
+
+      if (!isValid) {
+        showToast("Please fill out all fields with positive values.");
+        return;
+      }
+
+      const modal = bootstrap.Modal.getInstance(
+        document.querySelector("#px_custom_size_chart_modal")
+      );
+      modal.hide();
+    });
 
   // Call these functions when needed
   window.addToCart = (productId) => addToCart(productId);
@@ -573,17 +608,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
 
       const result = await response.json();
-      console.log(
-        Array.isArray(result.relatedProducts),
-        result.relatedProducts
-      );
 
       const productContainer = document.querySelector("#related-swiper");
       productContainer.innerHTML = result.relatedProducts
         .map(
           (product) => `
             <div class="swiper-slide">
-              <div class="product-card-2">
+              <div class="product-card-2 overflow-hidden">
                 <div class="product-card-image">
                   ${
                     product.highlights.sale
@@ -599,10 +630,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                       }" alt="${product.name}" style="aspect-ratio: 1/1;" />
                     </a>
                     <div class="product-action nav justify-content-center">
-                      <a href="#" class="btn btn-primary" onclick="addToCart('${
+                      <a  class="btn btn-primary" onclick="addToCart('${
                         product._id
                       }')"><i class="fi-shopping-cart"></i></a>
-                      <a href="#" class="btn btn-primary" onclick="addToWishlist('${
+                      <a  class="btn btn-primary" onclick="addToWishlist('${
                         product._id
                       }')"><i class="fi-heart"></i></a>
                       <a href="../product/product-details.html?productId=${
@@ -633,9 +664,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
                   </div>
                    <!-- Size Options with Stock Status -->
-                    <div class="nav-thumbs">
-                      ${renderSizeOptions(product.sizes, product._id)}
-                    </div>
+                   <div class="nav-thumbs">
+                    ${renderSizeOptions(product.sizes, product._id)}
+                   </div>
                 </div>
               </div>
             </div>
@@ -653,23 +684,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Swiper initialization
   function initializeSwiper() {
-    new Swiper(".related-swiper-container", {
+    new Swiper(".related-swiper-container",{
       slidesPerView: 2,
       spaceBetween: 10,
       loop: true,
-
       navigation: {
         nextEl: ".swiper-next-02",
         prevEl: ".swiper-prev-02",
       },
       autoplay: {
         delay: 3500,
-        disableOnInteraction: false,
+        disableOnInteraction: true,
       },
       breakpoints: {
         600: {
           slidesPerView: 3,
-          spaceBetween: 10,
         },
         991: {
           slidesPerView: 3,

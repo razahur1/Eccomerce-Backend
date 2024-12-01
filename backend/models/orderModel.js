@@ -11,6 +11,10 @@ const orderItemModel = new mongoose.Schema({
     type: String,
     required: true,
   },
+  size: {
+    label: String,
+    customSize: Object,
+  },
   price: {
     type: Number,
     required: true,
@@ -19,7 +23,33 @@ const orderItemModel = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  image: {
+});
+
+const shippingAddressModel = new mongoose.Schema({
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+  },
+  addressLine1: {
+    type: String,
+    required: true,
+  },
+  addressLine2: {
+    type: String,
+  },
+  postalCode: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  country: {
     type: String,
     required: true,
   },
@@ -27,15 +57,19 @@ const orderItemModel = new mongoose.Schema({
 
 const orderModel = new mongoose.Schema(
   {
+    code: {
+      type: String,
+      unique: true,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
       required: true,
     },
     orderItems: [orderItemModel],
-    shippingInfo: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "address",
+    shippingInfo: shippingAddressModel,
+    mobileNumber: {
+      type: String,
       required: true,
     },
     paymentMethod: {
@@ -47,16 +81,15 @@ const orderModel = new mongoose.Schema(
       id: String,
       status: String,
     },
-    // paymentInfo: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "payments",
-    //   required: true,
-    // },
+    subTotal: {
+      type: Number,
+      required: true,
+    },
     tax: {
       type: Number,
       required: true,
     },
-    shippingCharges: {
+    shippingCost: {
       type: Number,
       required: true,
     },
@@ -69,18 +102,35 @@ const orderModel = new mongoose.Schema(
       enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
       default: "Pending",
     },
-    // isPaid: {
-    //   type: Boolean,
-    //   default: false,
-    // },
-    // paidAt: {
-    //   type: Date,
-    // },
     deliveredAt: {
       type: Date,
+      default: null,
     },
   },
   { timestamps: true }
 );
+
+orderModel.pre("save", async function (next) {
+  if (!this.code) {
+    let isUnique = false;
+    let newCode;
+
+    while (!isUnique) {
+      const randomHex = generateRandomHexCode(6);
+      newCode = `O${randomHex}`;
+
+      // Check if the code already exists
+      const existingCategory = await mongoose
+        .model("orders")
+        .findOne({ code: newCode });
+      if (!existingCategory) {
+        isUnique = true;
+      }
+    }
+
+    this.code = newCode;
+  }
+  next();
+});
 
 export default mongoose.model("orders", orderModel);

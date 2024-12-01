@@ -37,13 +37,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let savedAddresses = [];
   let cartItems = [];
-  let shippingCost = 0;
+  let subTotal,
+    tax,
+    shippingCost,
+    totalAmount = 0;
 
   async function initCheckout() {
     cartItems = await fetchCartItem();
-    cartItems.length
-      ? renderCheckoutItems(cartItems)
-      : (checkoutItemsContainer.innerHTML = `<p>No items in the cart</p>`);
+    renderCheckoutItems(cartItems);
     updateOrderSummary(cartItems);
 
     savedAddresses = await fetchAddresses();
@@ -54,8 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderCheckoutItems(items) {
     checkoutItemsContainer.innerHTML = "";
-    items.forEach((item) => {
-      checkoutItemsContainer.innerHTML += `
+    if (items.length === 0) {
+      window.location.href = "../shop/shop.html";
+    } else {
+      items.forEach((item) => {
+        checkoutItemsContainer.innerHTML += `
           <li class="list-group-item p-3">
             <div class="row g-2">
               <div class="col-3 col-md-2 position-relative">
@@ -89,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   </a>
                 </div>
                 <div class="d-flex align-items-center">
-                  <span class="fs-sm">Size: ${item.size}</span>
+                  <span class="fs-sm">Size: ${item.size.label}</span>
                   <span class="ms-auto text-body">${
                     item.product.highlights.sale
                       ? formatPrice(item.product.salePrice)
@@ -100,7 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </li>
       `;
-    });
+      });
+    }
   }
 
   function renderSavedAddress(addresses) {
@@ -126,13 +131,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateOrderSummary(items) {
-    const subtotal = calculateSubtotal(items);
-    const tax = Math.floor(calculateTax(subtotal));
-    const grandTotal = calculateGrandTotal(subtotal, tax, shippingCost);
+    subTotal = calculateSubtotal(items);
+    tax = Math.floor(calculateTax(subTotal));
+    totalAmount = calculateGrandTotal(subTotal, tax, shippingCost);
 
     // Update the subtotal, tax, and grand total in the DOM
     document.querySelector(".subtotal-display").textContent =
-      formatPrice(subtotal);
+      formatPrice(subTotal);
     document.querySelector(".tax-display").textContent = formatPrice(tax);
 
     // Display "Enter shipping address" or the calculated shipping cost
@@ -144,56 +149,65 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.querySelector(".grand-total-display").textContent =
-      formatPrice(grandTotal);
+      formatPrice(totalAmount);
   }
 
+  const savedAddressRadio = document.getElementById("savedAddresses");
+  const addNewAddressRadio = document.getElementById("addNewAddress");
+
+  // Calculate shipping cost if saved address is initially selected
+  if (savedAddressRadio?.checked) {
+    const selectedAddress = savedAddresses.find(
+      (addr) =>
+        addr._id ===
+        document.querySelector('input[name="savedAddress"]:checked')?.value
+    );
+    if (selectedAddress)
+      updateShippingCost(selectedAddress.country, selectedAddress.city);
+  }
+
+  // Set up address change listeners if "Add New Address" is selected
+  if (addNewAddressRadio?.checked) setupAddressChangeListeners();
+
+  // Event listener for saved address selection
   document
     .getElementById("savedAddressContainer")
-    .addEventListener("change", (event) => {
-      if (event.target.name === "savedAddress") {
-        const selectedId = event.target.value;
+    .addEventListener("change", (e) => {
+      if (e.target.name === "savedAddress") {
         const selectedAddress = savedAddresses.find(
-          (addr) => addr._id === selectedId
+          (addr) => addr._id === e.target.value
         );
-
-        if (selectedAddress) {
-          console.log(`Selected Country: ${selectedAddress.country}`);
-          console.log(`Selected City: ${selectedAddress.city}`);
-          shippingCost = calculateShippingCost(
-            selectedAddress.country,
-            selectedAddress.city
-          );
-          updateOrderSummary(cartItems);
-        }
+        if (selectedAddress)
+          updateShippingCost(selectedAddress.country, selectedAddress.city);
       }
     });
 
-  document
-    .getElementById("addNewAddress")
-    .addEventListener("change", function () {
-      if (this.checked) {
-        document
-          .getElementById("checkout-country")
-          .addEventListener("input", handleAddressChange);
-        document
-          .getElementById("checkout-city")
-          .addEventListener("input", handleAddressChange);
-      }
-    });
+  // Event listener for add new address selection
+  addNewAddressRadio?.addEventListener("change", () =>
+    setupAddressChangeListeners()
+  );
+
+  function setupAddressChangeListeners() {
+    const countryInput = document.getElementById("checkout-country");
+    const cityInput = document.getElementById("checkout-city");
+
+    // Listen for changes in country and city input
+    countryInput.addEventListener("input", handleAddressChange);
+    cityInput.addEventListener("input", handleAddressChange);
+    handleAddressChange(); // Calculate cost immediately if any values are pre-filled
+  }
 
   function handleAddressChange() {
     const country = document.getElementById("checkout-country").value.trim();
     const city = document.getElementById("checkout-city").value.trim();
+    if (country && city) updateShippingCost(country, city);
+    else updateShippingCost("", "");
+  }
 
-    if (country && city) {
-      console.log(`Entered Country: ${country}`);
-      console.log(`Entered City: ${city}`);
-      shippingCost = calculateShippingCost(country, city);
-      updateOrderSummary(cartItems);
-    } else {
-      shippingCost = 0;
-      updateOrderSummary(cartItems);
-    }
+  function updateShippingCost(country, city) {
+    const cost = country && city ? calculateShippingCost(country, city) : 0;
+    shippingCost = cost;
+    updateOrderSummary(cartItems);
   }
 
   function calculateShippingCost(country, city) {
@@ -211,6 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to save the address to the database
   async function saveAddressToDb(addressData) {
     try {
+      showSpinner();
       const response = await fetch(ENDPOINTS.ADD_ADDRESS, {
         method: "POST",
         headers: {
@@ -224,7 +239,34 @@ document.addEventListener("DOMContentLoaded", () => {
       return result;
     } catch (error) {
       console.error(error);
+    } finally {
+      hideSpinner();
     }
+  }
+
+  async function saveOrderToDb(orderData) {
+    try {
+      showSpinner();
+      const response = await fetch(ENDPOINTS.CREATE_ORDER, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        credentials: "include",
+        body: JSON.stringify(orderData),
+      });
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      hideSpinner();
+    }
+  }
+
+  async function processPayFastPayment() {
+    return { success: true };
   }
 
   document
@@ -260,17 +302,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Select saved Address
       if (savedAddressRadio && selectedSavedAddressRadio) {
-        const selectedId = savedAddressRadio.value;
+        const selectedId = selectedSavedAddressRadio.value;
         addressData = savedAddresses.find((addr) => addr._id === selectedId);
-
-        if (addressData) {
-          console.log("Using selected saved address:", addressData);
-        }
       }
       // Add new Address
       else {
-        document.getElementById("addNewAddress").checked = true;
-        document.getElementById("addNewAddressCollapse").classList.add("show");
         const inputsToValidate = [
           { id: "checkout-mobileNumber", label: "Mobile Phone" },
           { id: "checkout-firstName", label: "First Name" },
@@ -307,16 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
           postalCode,
           city,
           country,
-          isDefault: false,
         };
-
-        if (savedChecked) {
-          const result = await saveAddressToDb(addressData);
-          console.log("Address saved to the database:", result);
-        } else {
-          console.log("Failed to save the address.");
-          return;
-        }
       }
 
       // Check if the number is valid
@@ -334,18 +361,49 @@ document.addEventListener("DOMContentLoaded", () => {
       const selectedPaymentMethod = document.querySelector(
         'input[name="payment"]:checked'
       );
-      if (selectedPaymentMethod) {
-        console.log(selectedPaymentMethod.value);
-      } else {
-        console.log("no selected");
+      if (!selectedPaymentMethod) {
+        showToast("Please Select Payment Method");
         return;
       }
 
+      const paymentMethod = selectedPaymentMethod.value;
+
+      // Prepare the order data
+      const orderData = {
+        shippingInfo: addressData,
+        mobileNumber,
+        paymentMethod,
+        subTotal,
+        tax,
+        shippingCost,
+        totalAmount,
+      };
+
       try {
-        console.log("Placing order...");
+        showSpinner();
+        if (paymentMethod === "ONLINE") {
+          const paymentConfirmation = await processPayFastPayment();
+          if (!paymentConfirmation.success) {
+            showToast("Payment failed. Please try again.");
+            return;
+          }
+        }
+
+        const result = await saveOrderToDb(orderData);
+        if (result.success) {
+          if (savedChecked) {
+            await saveAddressToDb(addressData);
+          }
+          initCheckout();
+          showToast("Order placed successfully!", "success");
+          sessionStorage.setItem("orderId", result.order._id);
+          window.location.href = `./order-place.html`;
+        }
       } catch (error) {
         showToast("Failed to place the order.");
         console.error(error);
+      } finally {
+        hideSpinner();
       }
     });
 });

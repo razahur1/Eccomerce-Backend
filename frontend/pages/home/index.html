@@ -817,648 +817,119 @@
                 <h3 class="h2 mt-2">Latest Arrivals</h3>
               </div>
             </div>
-            <div class="row g-2 g-sm-3 g-lg-4">
-              <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card-1 rounded-3 overflow-hidden">
-                  <div class="product-card-image">
-                    <div class="badge-ribbon">
-                      <span class="badge bg-danger">SALE</span>
-                    </div>
-                    <div class="product-action">
-                      <a href="#" class="btn btn-dark"
-                        ><i class="fi-heart"></i> </a
-                      ><a href="#" class="btn btn-dark"
-                        ><i class="fi-repeat"></i> </a
-                      ><a
-                        data-bs-toggle="modal"
-                        data-bs-target="#px-quick-view"
-                        href="javascript:void(0)"
-                        class="btn btn-dark"
-                        ><i class="fi-eye"></i
-                      ></a>
-                    </div>
-                    <div class="product-media">
-                      <a href="#"
-                        ><img
-                          class="img-fluid"
-                          src="../../assets/img/fashion/product-1.jpg"
-                          title=""
-                          alt=""
-                      /></a>
-                      <div class="product-cart-btn p-2">
-                        <a
-                          href="#"
-                          class="btn btn-dark btn-sm w-100 rounded-pill"
-                          ><i class="fi-shopping-cart"></i> Add to cart</a
-                        >
-                      </div>
-                    </div>
+            <div
+              id="latest-arrivals-container"
+              class="row g-2 g-sm-3 g-lg-4"
+            ></div>
+            <div
+              class="modal fade"
+              id="px_custom_size_chart_modal"
+              tabindex="-1"
+              aria-labelledby="px_custom_size_chart_modalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog custom-size-modal">
+                <!-- Using custom size -->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5
+                      class="modal-title"
+                      id="px_custom_size_chart_modalLabel"
+                    >
+                      Size Guide
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
                   </div>
-                  <div class="product-card-info">
-                    <div class="product-meta small">
-                      <a href="#">Clothing</a>, <a href="#">Men</a>
-                    </div>
-                    <div class="rating-star text">
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star"></i>
-                    </div>
-                    <h6 class="product-title">
-                      <a href="#">Arab Head Shemagh</a>
-                    </h6>
-                    <div class="product-price">
-                      <span class="text-primary">1500<small>PKR</small></span>
-                      <del class="fs-sm text-muted">2250<small>PKR</small></del>
-                    </div>
-                    <div class="nav-thumbs">
-                      <div class="form-check radio-text form-check-inline">
+                  <div class="modal-body">
+                    <p>Fill in the details for your custom size chart below:</p>
+                    <!-- Form for input fields -->
+                    <form id="customSizeform">
+                      <div class="mb-3">
+                        <label for="lengthInput" class="form-label"
+                          >Length (in inches)</label
+                        >
                         <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio1"
-                          checked="checked"
+                          type="number"
+                          class="form-control"
+                          id="lengthInput"
+                          placeholder="Enter length"
                         />
-                        <label class="radio-text-label rounded" for="btnradio1"
-                          >XS</label
-                        >
                       </div>
-                      <div class="form-check radio-text form-check-inline">
+                      <div class="mb-3">
+                        <label for="shoulderInput" class="form-label"
+                          >Shoulder (in inches)</label
+                        >
                         <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio2"
+                          type="number"
+                          class="form-control"
+                          id="shoulderInput"
+                          placeholder="Enter shoulder measurement"
                         />
-                        <label class="radio-text-label rounded" for="btnradio2"
-                          >S</label
-                        >
                       </div>
-                      <div class="form-check radio-text form-check-inline">
+                      <div class="mb-3">
+                        <label for="chestInput" class="form-label"
+                          >Chest 1" below Armhole (in inches)</label
+                        >
                         <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio3"
+                          type="number"
+                          class="form-control"
+                          id="chestInput"
+                          placeholder="Enter chest measurement"
                         />
-                        <label class="radio-text-label rounded" for="btnradio3"
-                          >M</label
-                        >
                       </div>
-                      <div class="form-check radio-text form-check-inline">
+                      <div class="mb-3">
+                        <label for="sleeveInput" class="form-label"
+                          >Sleeve Length (in inches)</label
+                        >
                         <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio4"
+                          type="number"
+                          class="form-control"
+                          id="sleeveInput"
+                          placeholder="Enter sleeve length"
                         />
-                        <label class="radio-text-label rounded" for="btnradio4"
-                          >L</label
-                        >
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card-1 rounded-3 overflow-hidden">
-                  <div class="product-card-image">
-                    <div class="badge-ribbon">
-                      <span class="badge bg-danger">Sale</span>
-                    </div>
-                    <div class="product-action">
-                      <a href="#" class="btn btn-dark"
-                        ><i class="fi-heart"></i> </a
-                      ><a href="#" class="btn btn-dark"
-                        ><i class="fi-repeat"></i> </a
-                      ><a
-                        data-bs-toggle="modal"
-                        data-bs-target="#px-quick-view"
-                        href="javascript:void(0)"
-                        class="btn btn-dark"
-                        ><i class="fi-eye"></i
-                      ></a>
-                    </div>
-                    <div class="product-media">
-                      <a href="#"
-                        ><img
-                          class="img-fluid"
-                          src="../../assets/img/fashion/product-1.jpg"
-                          title=""
-                          alt=""
-                      /></a>
-                      <div class="product-cart-btn p-2">
-                        <a
-                          href="#"
-                          class="btn btn-dark btn-sm w-100 rounded-pill"
-                          ><i class="fi-shopping-cart"></i> Add to cart</a
+                      <div class="mb-3">
+                        <label for="neckInput" class="form-label"
+                          >Neck Collar (in inches)</label
                         >
-                      </div>
-                    </div>
-                  </div>
-                  <div class="product-card-info">
-                    <div class="product-meta small">
-                      <a href="#">Clothing</a>, <a href="#">Men</a>
-                    </div>
-                    <div class="rating-star text">
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star"></i>
-                    </div>
-                    <h6 class="product-title">
-                      <a href="#">White Arabic Jubba</a>
-                    </h6>
-                    <div class="product-price">
-                      <span class="text-primary">4000<small>PKR</small></span>
-                      <del class="fs-sm text-muted">5000<small>PKR</small></del>
-                    </div>
-                    <div class="nav-thumbs">
-                      <div class="form-check radio-text form-check-inline">
                         <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio1"
-                          checked="checked"
+                          type="number"
+                          class="form-control"
+                          id="neckInput"
+                          placeholder="Enter neck collar measurement"
                         />
-                        <label class="radio-text-label rounded" for="btnradio1"
-                          >XS</label
-                        >
                       </div>
-                      <div class="form-check radio-text form-check-inline">
+                      <div class="mb-3">
+                        <label for="shalwarLengthInput" class="form-label"
+                          >Shalwar Length (in inches)</label
+                        >
                         <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio2"
+                          type="number"
+                          class="form-control"
+                          id="shalwarLengthInput"
+                          placeholder="Enter shalwar length"
                         />
-                        <label class="radio-text-label rounded" for="btnradio2"
-                          >S</label
-                        >
                       </div>
-                      <div class="form-check radio-text form-check-inline">
+                      <div class="mb-3">
+                        <label for="shalwarBottomInput" class="form-label"
+                          >Shalwar Bottom (in inches)</label
+                        >
                         <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio3"
+                          type="number"
+                          class="form-control"
+                          id="shalwarBottomInput"
+                          placeholder="Enter shalwar bottom measurement"
                         />
-                        <label class="radio-text-label rounded" for="btnradio3"
-                          >M</label
-                        >
                       </div>
-                      <div class="form-check radio-text form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio4"
-                        />
-                        <label class="radio-text-label rounded" for="btnradio4"
-                          >L</label
-                        >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card-1 rounded-3 overflow-hidden">
-                  <div class="product-card-image">
-                    <div class="badge-ribbon">
-                      <span class="badge bg-danger">Sale</span>
-                    </div>
-                    <div class="product-action">
-                      <a href="#" class="btn btn-dark"
-                        ><i class="fi-heart"></i> </a
-                      ><a href="#" class="btn btn-dark"
-                        ><i class="fi-repeat"></i> </a
-                      ><a
-                        data-bs-toggle="modal"
-                        data-bs-target="#px-quick-view"
-                        href="javascript:void(0)"
-                        class="btn btn-dark"
-                        ><i class="fi-eye"></i
-                      ></a>
-                    </div>
-                    <div class="product-media">
-                      <a href="#"
-                        ><img
-                          class="img-fluid"
-                          src="../../assets/img/fashion/product-1.jpg"
-                          title=""
-                          alt=""
-                      /></a>
-                      <div class="product-cart-btn p-2">
-                        <a
-                          href="#"
-                          class="btn btn-dark btn-sm w-100 rounded-pill"
-                          ><i class="fi-shopping-cart"></i> Add to cart</a
-                        >
-                      </div>
-                    </div>
-                  </div>
-                  <div class="product-card-info">
-                    <div class="product-meta small">
-                      <a href="#">Clothing</a>, <a href="#">Men</a>
-                    </div>
-                    <div class="rating-star text">
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star"></i>
-                    </div>
-                    <h6 class="product-title">
-                      <a href="#">Emerald Green Shalwar Qameez</a>
-                    </h6>
-                    <div class="product-price">
-                      <span class="text-primary">3000<small>PKR</small></span>
-                      <del class="fs-sm text-muted">4200<small>PKR</small></del>
-                    </div>
-                    <div class="nav-thumbs">
-                      <div class="form-check radio-text form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio1"
-                          checked="checked"
-                        />
-                        <label class="radio-text-label rounded" for="btnradio1"
-                          >XS</label
-                        >
-                      </div>
-                      <div class="form-check radio-text form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio2"
-                        />
-                        <label class="radio-text-label rounded" for="btnradio2"
-                          >S</label
-                        >
-                      </div>
-                      <div class="form-check radio-text form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio3"
-                        />
-                        <label class="radio-text-label rounded" for="btnradio3"
-                          >M</label
-                        >
-                      </div>
-                      <div class="form-check radio-text form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio4"
-                        />
-                        <label class="radio-text-label rounded" for="btnradio4"
-                          >L</label
-                        >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card-1 rounded-3 overflow-hidden">
-                  <div class="product-card-image">
-                    <div class="badge-ribbon">
-                      <span class="badge bg-danger">Sale</span>
-                    </div>
-                    <div class="product-action">
-                      <a href="#" class="btn btn-dark"
-                        ><i class="fi-heart"></i> </a
-                      ><a href="#" class="btn btn-dark"
-                        ><i class="fi-repeat"></i> </a
-                      ><a
-                        data-bs-toggle="modal"
-                        data-bs-target="#px-quick-view"
-                        href="javascript:void(0)"
-                        class="btn btn-dark"
-                        ><i class="fi-eye"></i
-                      ></a>
-                    </div>
-                    <div class="product-media">
-                      <a href="#"
-                        ><img
-                          class="img-fluid"
-                          src="../../assets/img/fashion/product-1.jpg"
-                          title=""
-                          alt=""
-                      /></a>
-                      <div class="product-cart-btn p-2">
-                        <a
-                          href="#"
-                          class="btn btn-dark btn-sm w-100 rounded-pill"
-                          ><i class="fi-shopping-cart"></i> Add to cart</a
-                        >
-                      </div>
-                    </div>
-                  </div>
-                  <div class="product-card-info">
-                    <div class="product-meta small">
-                      <a href="#">Clothing</a>, <a href="#">Men</a>
-                    </div>
-                    <div class="rating-star text">
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star"></i>
-                    </div>
-                    <h6 class="product-title">
-                      <a href="#">Navy Blue Shalwar Qameez</a>
-                    </h6>
-                    <div class="product-price">
-                      <span class="text-primary">3000<small>PKR</small></span>
-                      <del class="fs-sm text-muted">4200<small>PKR</small></del>
-                    </div>
-                    <div class="nav-thumbs">
-                      <div class="form-check radio-text form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio1"
-                          checked="checked"
-                        />
-                        <label class="radio-text-label rounded" for="btnradio1"
-                          >XS</label
-                        >
-                      </div>
-                      <div class="form-check radio-text form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio2"
-                        />
-                        <label class="radio-text-label rounded" for="btnradio2"
-                          >S</label
-                        >
-                      </div>
-                      <div class="form-check radio-text form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio3"
-                        />
-                        <label class="radio-text-label rounded" for="btnradio3"
-                          >M</label
-                        >
-                      </div>
-                      <div class="form-check radio-text form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="size3"
-                          id="btnradio4"
-                        />
-                        <label class="radio-text-label rounded" for="btnradio4"
-                          >L</label
-                        >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card-1 rounded-3 overflow-hidden">
-                  <div class="product-card-image">
-                    <div class="badge-ribbon">
-                      <span class="badge bg-danger">Sale</span>
-                    </div>
-                    <div class="product-action">
-                      <a href="#" class="btn btn-dark"
-                        ><i class="fi-heart"></i> </a
-                      ><a href="#" class="btn btn-dark"
-                        ><i class="fi-repeat"></i> </a
-                      ><a
-                        data-bs-toggle="modal"
-                        data-bs-target="#px-quick-view"
-                        href="javascript:void(0)"
-                        class="btn btn-dark"
-                        ><i class="fi-eye"></i
-                      ></a>
-                    </div>
-                    <div class="product-media">
-                      <a href="#"
-                        ><img
-                          class="img-fluid"
-                          src="../../assets/img/fashion/product-5.jpg"
-                          title=""
-                          alt=""
-                      /></a>
-                      <div class="product-cart-btn p-2">
-                        <a
-                          href="#"
-                          class="btn btn-dark btn-sm w-100 rounded-pill"
-                          ><i class="fi-shopping-cart"></i> Add to cart</a
-                        >
-                      </div>
-                    </div>
-                  </div>
-                  <div class="product-card-info">
-                    <div class="product-meta small">
-                      <a href="#">Clothing</a>, <a href="#">Men</a>
-                    </div>
-                    <div class="rating-star text">
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star"></i>
-                    </div>
-                    <h6 class="product-title">
-                      <a href="#">Black Arabic Jubba</a>
-                    </h6>
-                    <div class="product-price">
-                      <span class="text-primary">5000<small>PKR</small></span>
-                      <del class="fs-sm text-muted">5500<small>PKR</small></del>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card-1 rounded-3 overflow-hidden">
-                  <div class="product-card-image">
-                    <div class="badge-ribbon">
-                      <span class="badge bg-danger">Sale</span>
-                    </div>
-                    <div class="product-action">
-                      <a href="#" class="btn btn-dark"
-                        ><i class="fi-heart"></i> </a
-                      ><a href="#" class="btn btn-dark"
-                        ><i class="fi-repeat"></i> </a
-                      ><a
-                        data-bs-toggle="modal"
-                        data-bs-target="#px-quick-view"
-                        href="javascript:void(0)"
-                        class="btn btn-dark"
-                        ><i class="fi-eye"></i
-                      ></a>
-                    </div>
-                    <div class="product-media">
-                      <a href="#"
-                        ><img
-                          class="img-fluid"
-                          src="../../assets/img/fashion/product-5.jpg"
-                          title=""
-                          alt=""
-                      /></a>
-                      <div class="product-cart-btn p-2">
-                        <a
-                          href="#"
-                          class="btn btn-dark btn-sm w-100 rounded-pill"
-                          ><i class="fi-shopping-cart"></i> Add to cart</a
-                        >
-                      </div>
-                    </div>
-                  </div>
-                  <div class="product-card-info">
-                    <div class="product-meta small">
-                      <a href="#">Clothing</a>, <a href="#">Men</a>
-                    </div>
-                    <div class="rating-star text">
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star"></i>
-                    </div>
-                    <h6 class="product-title">
-                      <a href="#">Wine Mahroon Shalwar Qameez</a>
-                    </h6>
-                    <div class="product-price">
-                      <span class="text-primary">3000<small>PKR</small></span>
-                      <del class="fs-sm text-muted">4200<small>PKR</small></del>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card-1 rounded-3 overflow-hidden">
-                  <div class="product-card-image">
-                    <div class="badge-ribbon">
-                      <span class="badge bg-danger">Sale</span>
-                    </div>
-                    <div class="product-action">
-                      <a href="#" class="btn btn-dark"
-                        ><i class="fi-heart"></i> </a
-                      ><a href="#" class="btn btn-dark"
-                        ><i class="fi-repeat"></i> </a
-                      ><a
-                        data-bs-toggle="modal"
-                        data-bs-target="#px-quick-view"
-                        href="javascript:void(0)"
-                        class="btn btn-dark"
-                        ><i class="fi-eye"></i
-                      ></a>
-                    </div>
-                    <div class="product-media">
-                      <a href="#"
-                        ><img
-                          class="img-fluid"
-                          src="../../assets/img/fashion/product-5.jpg"
-                          title=""
-                          alt=""
-                      /></a>
-                      <div class="product-cart-btn p-2">
-                        <a
-                          href="#"
-                          class="btn btn-dark btn-sm w-100 rounded-pill"
-                          ><i class="fi-shopping-cart"></i> Add to cart</a
-                        >
-                      </div>
-                    </div>
-                  </div>
-                  <div class="product-card-info">
-                    <div class="product-meta small">
-                      <a href="#">Clothing</a>, <a href="#">Men</a>
-                    </div>
-                    <div class="rating-star text">
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star"></i>
-                    </div>
-                    <h6 class="product-title">
-                      <a href="#">White Head Shemagh</a>
-                    </h6>
-                    <div class="product-price">
-                      <span class="text-primary">1000<small>PKR</small></span>
-                      <del class="fs-sm text-muted">1800<small>PKR</small></del>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card-1 rounded-3 overflow-hidden">
-                  <div class="product-card-image">
-                    <div class="badge-ribbon">
-                      <span class="badge bg-danger">Sale</span>
-                    </div>
-                    <div class="product-action">
-                      <a href="#" class="btn btn-dark"
-                        ><i class="fi-heart"></i> </a
-                      ><a href="#" class="btn btn-dark"
-                        ><i class="fi-repeat"></i> </a
-                      ><a
-                        data-bs-toggle="modal"
-                        data-bs-target="#px-quick-view"
-                        href="javascript:void(0)"
-                        class="btn btn-dark"
-                        ><i class="fi-eye"></i
-                      ></a>
-                    </div>
-                    <div class="product-media">
-                      <a href="#"
-                        ><img
-                          class="img-fluid"
-                          src="../../assets/img/fashion/product-5.jpg"
-                          title=""
-                          alt=""
-                      /></a>
-                      <div class="product-cart-btn p-2">
-                        <a
-                          href="#"
-                          class="btn btn-dark btn-sm w-100 rounded-pill"
-                          ><i class="fi-shopping-cart"></i> Add to cart</a
-                        >
-                      </div>
-                    </div>
-                  </div>
-                  <div class="product-card-info">
-                    <div class="product-meta small">
-                      <a href="#">Clothing</a>, <a href="#">Men</a>
-                    </div>
-                    <div class="rating-star text">
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star-fill active"></i>
-                      <i class="bi-star"></i>
-                    </div>
-                    <h6 class="product-title">
-                      <a href="#">White Arabic Set</a>
-                    </h6>
-                    <div class="product-price">
-                      <span class="text-primary">4500<small>PKR</small></span>
-                      <del class="fs-sm text-muted">5500<small>PKR</small></del>
-                    </div>
+                      <button type="submit" class="btn btn-primary">
+                        Submit
+                      </button>
+                    </form>
                   </div>
                 </div>
               </div>
@@ -1504,417 +975,20 @@
                 <h3 class="fw-500 h2 m-0">Browse our Bestsellers</h3>
               </div>
             </div>
-            <div class="swiper-hover-arrow position-relative">
-              <div
-                class="swiper swiper-container"
-                data-swiper-options='{
-                              "slidesPerView": 2,
-                              "spaceBetween": 10,
-                              "loop": true,
-                              "pagination": {
-                                "el": ".swiper-pagination",
-                                "clickable": true
-                                },
-                              "navigation": {
-                                "nextEl": ".swiper-next-02",
-                                "prevEl": ".swiper-prev-02"
-                              },
-                              "autoplay": {
-                                "delay": 3500,
-                                "disableOnInteraction": false
-                              },
-                              "breakpoints": {
-                                "600": {
-                                  "slidesPerView": 3
-                                },
-                                "991": {
-                                  "slidesPerView": 3,
-                                  "spaceBetween": 24
-                                },
-                                "1200": {
-                                  "slidesPerView": 4,
-                                  "spaceBetween": 24
-                                }
-                              }
-                        }'
-              >
-                <div class="swiper-wrapper">
-                  <div class="swiper-slide">
-                    <div class="product-card-1 rounded-3 overflow-hidden">
-                      <div class="product-card-image">
-                        <div class="badge-ribbon">
-                          <span class="badge bg-danger">Sale</span>
-                        </div>
-                        <div class="product-action">
-                          <a href="#" class="btn btn-dark"
-                            ><i class="fi-heart"></i> </a
-                          ><a href="#" class="btn btn-dark"
-                            ><i class="fi-repeat"></i> </a
-                          ><a
-                            data-bs-toggle="modal"
-                            data-bs-target="#px-quick-view"
-                            href="javascript:void(0)"
-                            class="btn btn-dark"
-                            ><i class="fi-eye"></i
-                          ></a>
-                        </div>
-                        <div class="product-media">
-                          <a href="#"
-                            ><img
-                              class="img-fluid"
-                              src="../../assets/img/fashion/product-1.jpg"
-                              title=""
-                              alt=""
-                          /></a>
-                          <div class="product-cart-btn p-2">
-                            <a
-                              href="#"
-                              class="btn btn-dark btn-sm w-100 rounded-pill"
-                              ><i class="fi-shopping-cart"></i> Add to cart</a
-                            >
-                          </div>
-                        </div>
-                      </div>
-                      <div class="product-card-info">
-                        <div class="product-meta small">
-                          <a href="#">Clothing</a>, <a href="#">Men</a>
-                        </div>
-                        <div class="rating-star text">
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star"></i>
-                        </div>
-                        <h6 class="product-title">
-                          <a href="#">Arabic set</a>
-                        </h6>
-                        <div class="product-price">
-                          <span class="text-primary"
-                            >4500<small>PKR</small></span
-                          >
-                          <del class="fs-sm text-muted"
-                            >5500<small>PKR</small></del
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="swiper-slide">
-                    <div class="product-card-1 rounded-3 overflow-hidden">
-                      <div class="product-card-image">
-                        <div class="badge-ribbon">
-                          <span class="badge bg-danger">Sale</span>
-                        </div>
-                        <div class="product-action">
-                          <a href="#" class="btn btn-dark"
-                            ><i class="fi-heart"></i> </a
-                          ><a href="#" class="btn btn-dark"
-                            ><i class="fi-repeat"></i> </a
-                          ><a
-                            data-bs-toggle="modal"
-                            data-bs-target="#px-quick-view"
-                            href="javascript:void(0)"
-                            class="btn btn-dark"
-                            ><i class="fi-eye"></i
-                          ></a>
-                        </div>
-                        <div class="product-media">
-                          <a href="#"
-                            ><img
-                              class="img-fluid"
-                              src="../../assets/img/fashion/product-1.jpg"
-                              title=""
-                              alt=""
-                          /></a>
-                          <div class="product-cart-btn p-2">
-                            <a
-                              href="#"
-                              class="btn btn-dark btn-sm w-100 rounded-pill"
-                              ><i class="fi-shopping-cart"></i> Add to cart</a
-                            >
-                          </div>
-                        </div>
-                      </div>
-                      <div class="product-card-info">
-                        <div class="product-meta small">
-                          <a href="#">Clothing</a>, <a href="#">Men</a>
-                        </div>
-                        <div class="rating-star text">
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star"></i>
-                        </div>
-                        <h6 class="product-title">
-                          <a href="#">Arabic set</a>
-                        </h6>
-                        <div class="product-price">
-                          <span class="text-primary"
-                            >5500<small>PKR</small></span
-                          >
-                          <del class="fs-sm text-muted"
-                            >6000<small>PKR</small></del
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="swiper-slide">
-                    <div class="product-card-1 rounded-3 overflow-hidden">
-                      <div class="product-card-image">
-                        <div class="badge-ribbon">
-                          <span class="badge bg-danger">Sale</span>
-                        </div>
-                        <div class="product-action">
-                          <a href="#" class="btn btn-dark"
-                            ><i class="fi-heart"></i> </a
-                          ><a href="#" class="btn btn-dark"
-                            ><i class="fi-repeat"></i> </a
-                          ><a
-                            data-bs-toggle="modal"
-                            data-bs-target="#px-quick-view"
-                            href="javascript:void(0)"
-                            class="btn btn-dark"
-                            ><i class="fi-eye"></i
-                          ></a>
-                        </div>
-                        <div class="product-media">
-                          <a href="#"
-                            ><img
-                              class="img-fluid"
-                              src="../../assets/img/fashion/product-1.jpg"
-                              title=""
-                              alt=""
-                          /></a>
-                          <div class="product-cart-btn p-2">
-                            <a
-                              href="#"
-                              class="btn btn-dark btn-sm w-100 rounded-pill"
-                              ><i class="fi-shopping-cart"></i> Add to cart</a
-                            >
-                          </div>
-                        </div>
-                      </div>
-                      <div class="product-card-info">
-                        <div class="product-meta small">
-                          <a href="#">Clothing</a>, <a href="#">Men</a>
-                        </div>
-                        <div class="rating-star text">
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star"></i>
-                        </div>
-                        <h6 class="product-title">
-                          <a href="#">Arabic set</a>
-                        </h6>
-                        <div class="product-price">
-                          <span class="text-primary"
-                            >4500<small>PKR</small></span
-                          >
-                          <del class="fs-sm text-muted"
-                            >5500<small>PKR</small></del
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="swiper-slide">
-                    <div class="product-card-1 rounded-3 overflow-hidden">
-                      <div class="product-card-image">
-                        <div class="badge-ribbon">
-                          <span class="badge bg-danger">Sale</span>
-                        </div>
-                        <div class="product-action">
-                          <a href="#" class="btn btn-dark"
-                            ><i class="fi-heart"></i> </a
-                          ><a href="#" class="btn btn-dark"
-                            ><i class="fi-repeat"></i> </a
-                          ><a
-                            data-bs-toggle="modal"
-                            data-bs-target="#px-quick-view"
-                            href="javascript:void(0)"
-                            class="btn btn-dark"
-                            ><i class="fi-eye"></i
-                          ></a>
-                        </div>
-                        <div class="product-media">
-                          <a href="#"
-                            ><img
-                              class="img-fluid"
-                              src="../../assets/img/fashion/product-1.jpg"
-                              title=""
-                              alt=""
-                          /></a>
-                          <div class="product-cart-btn p-2">
-                            <a
-                              href="#"
-                              class="btn btn-dark btn-sm w-100 rounded-pill"
-                              ><i class="fi-shopping-cart"></i> Add to cart</a
-                            >
-                          </div>
-                        </div>
-                      </div>
-                      <div class="product-card-info">
-                        <div class="product-meta small">
-                          <a href="#">Clothing</a>, <a href="#">Men</a>
-                        </div>
-                        <div class="rating-star text">
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star"></i>
-                        </div>
-                        <h6 class="product-title">
-                          <a href="#">Black Arabic Jubba</a>
-                        </h6>
-                        <div class="product-price">
-                          <span class="text-primary"
-                            >5000<small>PKR</small></span
-                          >
-                          <del class="fs-sm text-muted"
-                            >5500<small>PKR</small></del
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="swiper-slide">
-                    <div class="product-card-1 rounded-3 overflow-hidden">
-                      <div class="product-card-image">
-                        <div class="badge-ribbon">
-                          <span class="badge bg-danger">Sale</span>
-                        </div>
-                        <div class="product-action">
-                          <a href="#" class="btn btn-dark"
-                            ><i class="fi-heart"></i> </a
-                          ><a href="#" class="btn btn-dark"
-                            ><i class="fi-repeat"></i> </a
-                          ><a
-                            data-bs-toggle="modal"
-                            data-bs-target="#px-quick-view"
-                            href="javascript:void(0)"
-                            class="btn btn-dark"
-                            ><i class="fi-eye"></i
-                          ></a>
-                        </div>
-                        <div class="product-media">
-                          <a href="#"
-                            ><img
-                              class="img-fluid"
-                              src="../../assets/img/fashion/product-1.jpg"
-                              title=""
-                              alt=""
-                          /></a>
-                          <div class="product-cart-btn p-2">
-                            <a
-                              href="#"
-                              class="btn btn-dark btn-sm w-100 rounded-pill"
-                              ><i class="fi-shopping-cart"></i> Add to cart</a
-                            >
-                          </div>
-                        </div>
-                      </div>
-                      <div class="product-card-info">
-                        <div class="product-meta small">
-                          <a href="#">Clothing</a>, <a href="#">Men</a>
-                        </div>
-                        <div class="rating-star text">
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star"></i>
-                        </div>
-                        <h6 class="product-title">
-                          <a href="#">Wine Mahroon Shalwar Qameez</a>
-                        </h6>
-                        <div class="product-price">
-                          <span class="text-primary"
-                            >3000<small>PKR</small></span
-                          >
-                          <del class="fs-sm text-muted"
-                            >4200<small>PKR</small></del
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="swiper-slide">
-                    <div class="product-card-1 rounded-3 overflow-hidden">
-                      <div class="product-card-image">
-                        <div class="badge-ribbon">
-                          <span class="badge bg-danger">Sale</span>
-                        </div>
-                        <div class="product-action">
-                          <a href="#" class="btn btn-dark"
-                            ><i class="fi-heart"></i> </a
-                          ><a href="#" class="btn btn-dark"
-                            ><i class="fi-repeat"></i> </a
-                          ><a
-                            data-bs-toggle="modal"
-                            data-bs-target="#px-quick-view"
-                            href="javascript:void(0)"
-                            class="btn btn-dark"
-                            ><i class="fi-eye"></i
-                          ></a>
-                        </div>
-                        <div class="product-media">
-                          <a href="#"
-                            ><img
-                              class="img-fluid"
-                              src="../../assets/img/fashion/product-1.jpg"
-                              title=""
-                              alt=""
-                          /></a>
-                          <div class="product-cart-btn p-2">
-                            <a
-                              href="#"
-                              class="btn btn-dark btn-sm w-100 rounded-pill"
-                              ><i class="fi-shopping-cart"></i> Add to cart</a
-                            >
-                          </div>
-                        </div>
-                      </div>
-                      <div class="product-card-info">
-                        <div class="product-meta small">
-                          <a href="#">Clothing</a>, <a href="#">Men</a>
-                        </div>
-                        <div class="rating-star text">
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star-fill active"></i>
-                          <i class="bi-star"></i>
-                        </div>
-                        <h6 class="product-title">
-                          <a href="#">Black Shalwar Qameez</a>
-                        </h6>
-                        <div class="product-price">
-                          <span class="text-primary"
-                            >3500<small>PKR</small></span
-                          >
-                          <del class="fs-sm text-muted"
-                            >4500<small>PKR</small></del
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+            <div
+              class="swiper-hover-arrow position-relative"
+              style="overflow: hidden"
+            >
+              <div class="best-seller-swiper-container">
+                <div class="swiper-wrapper" id="best-seller-swiper"></div>
+                <div class="swiper-pagination"></div>
+                <!-- Next and Prev buttons -->
+                <div class="swiper-arrow-style-01 swiper-next swiper-next-02">
+                  <i class="bi-chevron-right"></i>
                 </div>
-                <div
-                  class="swiper-pagination mt-4 d-lg-none position-relative"
-                ></div>
-              </div>
-              <div class="swiper-arrow-style-01 swiper-next swiper-next-02">
-                <i class="bi-chevron-right"></i>
-              </div>
-              <div class="swiper-arrow-style-01 swiper-prev swiper-prev-02">
-                <i class="bi-chevron-left"></i>
+                <div class="swiper-arrow-style-01 swiper-prev swiper-prev-02">
+                  <i class="bi-chevron-left"></i>
+                </div>
               </div>
             </div>
           </div>
@@ -2018,6 +1092,7 @@
                       qameez! This glowing shade of blue brings a sense of calm
                       to your style 💙
                     </p>
+                    v
                     <a
                       class="btn btn-outline-mode rounded-pill"
                       href="../blog/blog.html"
@@ -2302,5 +1377,7 @@
     <script src="../../assets/js/custom.js"></script>
     <script src="../../assets/js/theme.js"></script>
     <script src="../../assets/js/color-modes.js"></script>
+
+    <script type="module" src="../../assets/js/index.js"></script>
   </body>
 </html>

@@ -6,6 +6,7 @@ import {
   getOrderByIdController,
   updateOrderStatusController,
   deleteOrderController,
+  getPendingOrdersController
 } from "../controllers/orderController.js";
 import { requireSignIn, IsAdmin } from "../middlewares/authMiddleware.js";
 
@@ -16,6 +17,9 @@ router.post("/create", requireSignIn, createOrderController);
 
 // Get all orders (Admin)
 router.get("/get-all", requireSignIn, IsAdmin, getAllOrdersController);
+
+// Get all pending orders (Admin)
+router.get("/get-pending", requireSignIn, IsAdmin, getPendingOrdersController);
 
 // Get all orders for the logged-in user
 router.get("/my-orders", requireSignIn, getUserOrdersController);

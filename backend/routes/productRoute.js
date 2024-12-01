@@ -10,6 +10,9 @@ import {
   addProductReviewController,
   getProductReviewController,
   getRelatedProductsController,
+  getBestSellersController,
+  getNewArrivalsController,
+  getOutOfStockProductsController,
 } from "../controllers/productController.js";
 import { requireSignIn, IsAdmin } from "../middlewares/authMiddleware.js";
 import { multipleUpload, singleUpload } from "../middlewares/multer.js";
@@ -27,6 +30,20 @@ router.post(
 
 // GET || Get all products
 router.get("/get-all", getProductsController);
+
+// GET || Get New Arrivals
+router.get("/new-arrivals", getNewArrivalsController);
+
+// GET || Get Best Sellers
+router.get("/best-sellers", getBestSellersController);
+
+// GET || Get out of stock products
+router.get(
+  "/out-of-stock",
+  requireSignIn,
+  IsAdmin,
+  getOutOfStockProductsController
+);
 
 // GET || Get a single product by ID
 router.get("/:id", getProductByIdController);

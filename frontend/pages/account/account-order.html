@@ -456,9 +456,7 @@
                         href="account-order.html"
                       >
                         <i class="bi bi-bag me-2"></i> Order
-                        <div class="ms-auto badge-pill badge bg-secondary">
-                          5
-                        </div>
+                        
                       </a>
                     </li>
                     <li class="border-bottom mb-0">
@@ -467,9 +465,7 @@
                         href="account-wishlist.html"
                       >
                         <i class="fi-heart me-2"></i>Wishlist
-                        <div class="ms-auto badge-pill badge bg-secondary">
-                          5
-                        </div>
+                       
                       </a>
                     </li>
                   </ul>
@@ -526,12 +522,13 @@
                             type="text"
                             class="form-control"
                             placeholder="Search orders"
+                            id="orderSearchInput"
                           />
                         </div>
                       </div>
                       <table class="table table-bordered table-hover mb-0">
                         <thead>
-                          <tr>
+                          <tr class="text-center align-middle">
                             <th scope="col">Order Code</th>
                             <th scope="col">Date Purchase</th>
                             <th scope="col">Status</th>
@@ -539,101 +536,23 @@
                             <th scope="col">Actions</th>
                           </tr>
                         </thead>
-                        <tbody>
-                          <tr>
-                            <td>9234234</td>
-                            <td>May 21, 2021</td>
-                            <td>In Progress</td>
-                            <td>$150</td>
-                            <td>
-                              <button
-                                class="btn btn-sm btn-info"
-                                data-bs-toggle="modal"
-                                data-bs-target="#viewOrderModal"
-                                onclick="viewOrder(9234234, 'May 21, 2021', 'In Progress', '$150')"
-                              >
-                                <i class="fas fa-eye"></i>
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>9234234</td>
-                            <td>May 21, 2021</td>
-                            <td>Cancel</td>
-                            <td>$150</td>
-                            <td>
-                              <button
-                                class="btn btn-sm btn-info"
-                                data-bs-toggle="modal"
-                                data-bs-target="#viewOrderModal"
-                                onclick="viewOrder(9234234, 'May 21, 2021', 'Cancel', '$150')"
-                              >
-                                <i class="fas fa-eye"></i>
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>9234234</td>
-                            <td>May 21, 2021</td>
-                            <td>Delivered</td>
-                            <td>$150</td>
-                            <td>
-                              <button
-                                class="btn btn-sm btn-info"
-                                data-bs-toggle="modal"
-                                data-bs-target="#viewOrderModal"
-                                onclick="viewOrder(9234234, 'May 21, 2021', 'Delivered', '$150')"
-                              >
-                                <i class="fas fa-eye"></i>
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>9234234</td>
-                            <td>May 21, 2021</td>
-                            <td>On Hold</td>
-                            <td>$150</td>
-                            <td>
-                              <button
-                                class="btn btn-sm btn-info"
-                                data-bs-toggle="modal"
-                                data-bs-target="#viewOrderModal"
-                                onclick="viewOrder(9234234, 'May 21, 2021', 'On Hold', '$150')"
-                              >
-                                <i class="fas fa-eye"></i>
-                              </button>
-                            </td>
-                          </tr>
+                        <tbody id="orderTableBody">
+                          <!-- Dynamic rows will be populated here by JavaScript -->
                         </tbody>
                       </table>
                     </div>
                   </div>
                 </div>
-                <div class="d-flex align-items-center mt-3">
-                  <div class="d-none d-lg-block">Showing: 1 - 12 of 17</div>
-                  <div class="ms-lg-auto">
-                    <ul class="pagination m-0">
-                      <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                          <span aria-hidden="true">«</span>
-                        </a>
-                      </li>
-                      <li class="page-item active">
-                        <a class="page-link" href="#">1</a>
-                      </li>
-                      <li class="page-item">
-                        <a class="page-link" href="#">2</a>
-                      </li>
-                      <li class="page-item">
-                        <a class="page-link" href="#">3</a>
-                      </li>
-                      <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                          <span aria-hidden="true">»</span>
-                        </a>
-                      </li>
+                <!-- Pagination Buttons -->
+                <div
+                  class="d-flex justify-content-between align-items-center my-3 px-3"
+                >
+                  <div id="pagination-info" class="text-muted"></div>
+                  <nav aria-label="Page navigation">
+                    <ul class="pagination" id="pagination-controls">
+                      <!-- Pagination buttons will be dynamically inserted here -->
                     </ul>
-                  </div>
+                  </nav>
                 </div>
               </div>
             </div>
@@ -648,34 +567,102 @@
           >
             <div class="modal-dialog modal-lg">
               <div class="modal-content">
-                <div class="modal-header">
+                <!-- Header -->
+                <div class="modal-header bg-primary text-white">
                   <h5 class="modal-title" id="viewOrderModalLabel">
                     Order Details
                   </h5>
                   <button
                     type="button"
-                    class="btn-close"
+                    class="btn-close btn-close-white"
                     data-bs-dismiss="modal"
                     aria-label="Close"
                   ></button>
                 </div>
+
+                <!-- Body -->
                 <div class="modal-body">
-                  <h5 id="viewCustomerName"></h5>
-                  <p>
-                    <strong>Order Code:</strong>
-                    <span id="viewOrderCode"></span>
-                  </p>
-                  <p>
-                    <strong>Date Purchase:</strong>
-                    <span id="viewDatePurchase"></span>
-                  </p>
-                  <p>
-                    <strong>Status:</strong> <span id="viewOrderStatus"></span>
-                  </p>
-                  <p>
-                    <strong>Total:</strong> <span id="viewOrderTotal"></span>
-                  </p>
-                  <ul id="viewOrderItemsList"></ul>
+                  <!-- Customer Info -->
+                  <div class="mb-4">
+                    <h5 class="mb-1" id="viewCustomerName"></h5>
+                    <p class="mb-0 text-muted">
+                      <strong>Order Code:</strong>
+                      <span id="viewOrderCode"></span>
+                    </p>
+                    <p class="mb-0 text-muted">
+                      <strong>Date Purchased:</strong>
+                      <span id="viewDatePurchase"></span>
+                    </p>
+                    <p class="mb-0 text-muted">
+                      <strong>Status:</strong>
+                      <span
+                        class="badge bg-info text-dark"
+                        id="viewOrderStatus"
+                      ></span>
+                    </p>
+                  </div>
+
+                  <!-- Order Summary -->
+                  <div class="border rounded p-3 mb-4">
+                    <h6 class="text-primary">Order Summary</h6>
+                    <p class="mb-1">
+                      <strong>Subtotal:</strong> <span id="viewSubTotal"></span>
+                    </p>
+                    <p class="mb-1">
+                      <strong>Shipping Cost:</strong>
+                      <span id="viewShippingCost"></span>
+                    </p>
+                    <p class="mb-1">
+                      <strong>Tax:</strong> <span id="viewTax"></span>
+                    </p>
+                    <p class="mb-0">
+                      <strong>Total:</strong>
+                      <span
+                        class="text-success fs-5"
+                        id="viewOrderTotal"
+                      ></span>
+                    </p>
+                  </div>
+
+                  <!-- Shipping Info -->
+                  <div class="border rounded p-3 mb-4">
+                    <h6 class="text-primary">Shipping Information</h6>
+                    <ul class="list-unstyled mb-0">
+                      <li>
+                        <strong>First Name:</strong>
+                        <span id="shippingFirstName"></span>
+                      </li>
+                      <li>
+                        <strong>Last Name:</strong>
+                        <span id="shippingLastName"></span>
+                      </li>
+                      <li>
+                        <strong>Address:</strong>
+                        <span id="shippingAddress"></span>
+                      </li>
+                      <li>
+                        <strong>Postal Code:</strong>
+                        <span id="shippingPostalCode"></span>
+                      </li>
+                      <li>
+                        <strong>City:</strong> <span id="shippingCity"></span>
+                      </li>
+                      <li>
+                        <strong>Country:</strong>
+                        <span id="shippingCountry"></span>
+                      </li>
+                      <li>
+                        <strong>Contact Number:</strong>
+                        <span id="mobileNumber"></span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Order Items -->
+                  <div class="border rounded p-3">
+                    <h6 class="text-primary">Order Items</h6>
+                    <ul id="viewOrderItemsList" class="list-unstyled mb-0"></ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -847,5 +834,7 @@
     <script src="../../assets/js/custom.js"></script>
     <script src="../../assets/js/theme.js"></script>
     <script src="../../assets/js/color-modes.js"></script>
+
+    <script type="module" src="./accountOrder.js"></script>
   </body>
 </html>

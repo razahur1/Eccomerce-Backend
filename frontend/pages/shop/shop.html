@@ -172,31 +172,43 @@
                             class="btn-close"
                             data-bs-dismiss="offcanvas"
                             aria-label="Close"
+                            id="closeSidebarButton"
                           ></button>
                         </div>
                         <div class="offcanvas-body">
-                          <form class="position-relative w-100">
+                          <form class="position-relative w-100" id="searchForm">
                             <div class="input-group">
                               <!-- Search input -->
                               <input
                                 class="form-control shadow-none"
                                 type="text"
                                 name="search"
+                                id="searchInput"
                                 placeholder="What are you looking for?"
-                              /><!-- Search button -->
+                                autocomplete="off"
+                              />
+                              <!-- Search button -->
                               <button
                                 type="button"
                                 class="btn btn-primary shadow-none"
+                                id="searchButton"
                               >
                                 <i class="fi-search"></i>
                               </button>
                             </div>
+                            <!-- Suggestion list -->
+                            <ul
+                              class="dropdown-menu w-100 shadow position-absolute"
+                              id="searchSuggestions"
+                              style="z-index: 1000"
+                            ></ul>
                           </form>
+
                           <div class="pt-3">
                             <div class="nav tag-cloud">
                               <a
                                 class="rounded-pill px-3 small font-w-500 py-1 bg-gray-200 me-1 mb-1 text-mode"
-                                href="#"
+                                href="../../pages/shop/shop.html?search=design"
                                 >Design</a
                               >
                               <a
@@ -251,27 +263,32 @@
                       class="dropdown-menu dropdown-menu-end mt-2 shadow"
                       aria-labelledby="dropdown_myaccount"
                     >
-                      <a class="dropdown-item" href="../login/login.html"
-                        >LOGIN</a
-                      >
-                      <a class="dropdown-item" href="../login/sign-up.html"
-                        >REGISTER</a
-                      >
-                      <a
-                        class="dropdown-item"
-                        href="../account/account-profile.html"
-                        >ACCOUNT</a
-                      >
-                      <a
-                        class="dropdown-item"
-                        href="../login/forgot-password.html"
-                        >FORGOT PASSWORD</a
-                      >
+                      <div id="unauthenticated-links">
+                        <a class="dropdown-item" href="../login/login.html"
+                          >LOGIN</a
+                        >
+                        <a class="dropdown-item" href="../login/sign-up.html"
+                          >REGISTER</a
+                        >
+                        <a
+                          class="dropdown-item"
+                          href="../login/forgot-password.html"
+                          >FORGOT PASSWORD</a
+                        >
+                      </div>
+                      <div id="authenticated-links" style="display: none">
+                        <a
+                          class="dropdown-item"
+                          href="../account/account-profile.html"
+                          >ACCOUNT</a
+                        >
+                      </div>
                     </div>
                   </div>
                   <div class="nav-item d-none d-xl-block">
-                    <a class="nav-link" href="../wishlist/wishlist.html">
+                    <a class="nav-link" href="../account/account-wishlist.html">
                       <i class="fi-heart"></i>
+                      <sub>08</sub>
                     </a>
                   </div>
                   <div class="nav-item">
@@ -283,6 +300,7 @@
                       aria-controls="modalMiniCart"
                     >
                       <i class="fi-shopping-cart"></i>
+                      <sub>08</sub>
                     </a>
                   </div>
                 </div>
@@ -397,7 +415,320 @@
             </div>
           </div>
         </nav>
+
+        <div class="mobile-header-01 d-lg-none">
+          <div class="mob-head-in">
+            <div class="mob-toggle">
+              <button
+                class="hm-toggle-mob"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvas_mobile_header_01"
+                aria-controls="offcanvas_mobile_header_01"
+              >
+                <span></span>
+              </button>
+            </div>
+            <div
+              class="mob-logo text-center w-100 d-flex justify-content-center"
+            >
+              <a href="../home/index.html">
+                <img
+                  class="logo-dark"
+                  src="../../assets/img/Siyaah-Logo4B.png"
+                  title=""
+                  alt=""
+                />
+                <img
+                  class="logo-light"
+                  src="../../assets/img/Siyaah-Logo4W.png"
+                  title=""
+                  alt=""
+                />
+              </a>
+            </div>
+            <div class="mob-end">
+              <div class="nav-item">
+                <a
+                  class="nav-link"
+                  data-bs-toggle="offcanvas"
+                  href="../shop/shop-cart.html"
+                  role="button"
+                  aria-controls="modalMiniCart"
+                >
+                  <i class="fi-shopping-cart mobile-cart"></i>
+                  <sub>08</sub>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </header>
+
+      <div class="mob-header-btn-fixed-01 d-lg-none">
+        <div class="mob-hb-in">
+          <div class="mob-hb-item">
+            <a class="mob-hb-link" href="../shop/shop.html">
+              <i class="fi-grid"></i>
+              <span>Shop</span>
+            </a>
+          </div>
+          <div class="mob-hb-item">
+            <a
+              class="mob-hb-link"
+              data-bs-toggle="offcanvas"
+              href="#header_search_popup"
+              role="button"
+              aria-controls="header_search_popup"
+            >
+              <i class="fi-search"></i>
+              <span>Search</span>
+            </a>
+          </div>
+          <div class="mob-hb-item">
+            <a href="../login/login.html" class="mob-hb-link">
+              <i class="fi-user"></i>
+              <span>Login</span>
+            </a>
+          </div>
+          <div class="mob-hb-item">
+            <a href="../account/account-wishlist.html" class="mob-hb-link">
+              <i class="fi-heart">
+                <sub>08</sub>
+              </i>
+              <span>Wishlist</span>
+            </a>
+          </div>
+          <div class="mob-hb-item">
+            <a
+              class="mob-hb-link"
+              data-bs-toggle="offcanvas"
+              href="../shop/shop-cart.html"
+              role="button"
+              aria-controls="modalMiniCart"
+            >
+              <i class="fi-shopping-cart">
+                <sub>08</sub>
+              </i>
+              <span>Cart</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="offcanvas-lg mobile-nav-offcanvas offcanvas-start d-lg-none"
+        tabindex="-1"
+        id="offcanvas_mobile_header_01"
+        aria-labelledby="offcanvas_mobile_header_01"
+      >
+        <div class="offcanvas-header">
+          <div class="offcanvas-header-overlay"></div>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="offcanvas"
+            data-bs-target="#offcanvas_mobile_header_01"
+            aria-label="Close"
+          >
+            <i class="fi-x"></i>
+          </button>
+          <div class="mob-user">
+            <a href="../login/login.html">
+              <i class="fi-user"></i>
+              <span>Login</span>
+            </a>
+          </div>
+          <ul class="mob-extra">
+            <li class="nav-item">
+              <a href="../account/account-wishlist.html" class="nav-link">
+                <i class="fi-heart"></i>
+                <span>Wishlist</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link dropdown-toggle text-white"
+                href="#"
+                role="button"
+                id="dropdown_language"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <img
+                  width="20"
+                  src="../../assets/img/flags/uk.svg"
+                  alt
+                />English
+              </a>
+              <div
+                class="dropdown-menu mt-2 shadow"
+                aria-labelledby="dropdown_language"
+                style="margin: 0px"
+              >
+                <div>
+                  <select class="form-select form-select-sm">
+                    <option value="usd">$ USD</option>
+                    <option value="eur">€ EUR</option>
+                    <option value="ukp">£ UKP</option>
+                    <option value="jpy">¥ JPY</option>
+                  </select>
+                </div>
+                <a class="dropdown-item" href="#">
+                  <img
+                    class="me-2"
+                    width="20"
+                    src="../../assets/img/flags/sp.svg"
+                    alt
+                  />
+                  Español
+                </a>
+                <a class="dropdown-item" href="#">
+                  <img
+                    class="me-2"
+                    width="20"
+                    src="../../assets/img/flags/fr.svg"
+                    alt
+                  />
+                  Français
+                </a>
+                <a class="dropdown-item" href="#">
+                  <img
+                    class="me-2"
+                    width="20"
+                    src="../../assets/img/flags/gr.svg"
+                    alt
+                  />
+                  Deutsch
+                </a>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav mx-auto">
+            <li class="dropdown dropdown-full nav-item">
+              <a href="../shop/shop.html" class="nav-link">SIYAH STORE</a>
+            </li>
+            <li class="dropdown dropdown-full nav-item">
+              <a href="#" class="nav-link">MEN</a>
+              <label class="px-dropdown-toggle mob-menu"></label>
+              <div class="dropdown-menu dropdown-mega-menu py-0">
+                <div class="container-fluid p-3 p-lg-4">
+                  <div class="row gy-4">
+                    <div class="col-6 col-md-4 col-lg-2">
+                      <ul class="list-unstyled link-list-style-02">
+                        <li>
+                          <a
+                            href="../Men/shalwar-qameez.html"
+                            class="dropdown-item"
+                            >SHALWAR QAMEEZ</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="../Men/arabic-jubba.html"
+                            class="dropdown-item"
+                            >ARABIC JUBBA</a
+                          >
+                        </li>
+                        <li>
+                          <a href="../Men/mufflars.html" class="dropdown-item"
+                            >MUFFLER</a
+                          >
+                        </li>
+                        <li>
+                          <a href="../Men/shawl.html" class="dropdown-item"
+                            >SHAWL</a
+                          >
+                        </li>
+                        <li>
+                          <a href="../Men/turbans.html" class="dropdown-item"
+                            >TURBANS</a
+                          >
+                        </li>
+                        <li>
+                          <a href="../Men/watch.html" class="dropdown-item"
+                            >WATCHES</a
+                          >
+                        </li>
+                        <li>
+                          <a href="../Men/foot-wear.html" class="dropdown-item"
+                            >FOOTWEAR</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="dropdown dropdown-full nav-item">
+              <a href="#" class="nav-link">WOMEN</a>
+              <label class="px-dropdown-toggle mob-menu"></label>
+              <div class="dropdown-menu dropdown-mega-menu py-0">
+                <div class="container-fluid p-3 p-lg-4">
+                  <div class="row gy-4">
+                    <div class="col-6 col-md-4 col-lg-2">
+                      <ul class="list-unstyled link-list-style-02">
+                        <li>
+                          <a href="../Women/kurti.html" class="dropdown-item"
+                            >KURTI</a
+                          >
+                        </li>
+                        <li>
+                          <a href="../Women/scarves.html" class="dropdown-item"
+                            >SCARVES</a
+                          >
+                        </li>
+                        <li>
+                          <a href="../Women/tops.html" class="dropdown-item"
+                            >TOPS</a
+                          >
+                        </li>
+                        <li>
+                          <a href="../Women/outwear.html" class="dropdown-item"
+                            >OUTWEAR</a
+                          >
+                        </li>
+                        <li>
+                          <a href="../Women/bottoms.html" class="dropdown-item"
+                            >BOTTOMS</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="../Women/arabic-chadar.html"
+                            class="dropdown-item"
+                            >ARABIC CHADAR</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="../Women/foot-wear.html"
+                            class="dropdown-item"
+                            >FOOTWEAR</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="dropdown dropdown-full nav-item">
+              <a href="../header/about-us.html" class="nav-link dropdown-item"
+                >ABOUT</a
+              >
+            </li>
+            <li class="dropdown dropdown-full nav-item">
+              <a href="../sale/sales.html" class="nav-link text-danger">SALE</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
       <main>
         <div
           class="bg-no-repeat bg-cover bg-right-center position-relative"
@@ -437,6 +768,7 @@
                     type="button"
                     class="btn-close"
                     data-bs-dismiss="offcanvas"
+                    data-bs-target="#shop_filter"
                     aria-label="Close"
                   ></button>
                 </div>
@@ -747,6 +1079,18 @@
               </div>
               <div class="col">
                 <div class="shop-top-bar-02 d-flex pb-3">
+                  <div class="layout-change">
+                    <!-- Mobile Toggle -->
+                    <button
+                      class="btn btn-sm d-lg-none"
+                      type="button"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#shop_filter"
+                      aria-controls="shop_filter"
+                    >
+                      <i class="fs-4 lh-1 bi bi-justify-left"></i></button
+                    ><!-- End Mobile Toggle -->
+                  </div>
                   <div class="shop-clear-filter-01" id="selectedFilters">
                     <!-- The selected filters will be appended here dynamically -->
                   </div>
@@ -802,6 +1146,121 @@
                   </div>
                 </div>
                 <div id="products-container" class="row g-3"></div>
+                <!-- Using custom size -->
+                <div
+                  class="modal fade"
+                  id="px_custom_size_chart_modal"
+                  tabindex="-1"
+                  aria-labelledby="px_custom_size_chart_modalLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog custom-size-modal">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5
+                          class="modal-title"
+                          id="px_custom_size_chart_modalLabel"
+                        >
+                          Size Guide
+                        </h5>
+                        <button
+                          type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                        ></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>
+                          Fill in the details for your custom size chart below:
+                        </p>
+                        <!-- Form for input fields -->
+                        <form id="customSizeform">
+                          <div class="mb-3">
+                            <label for="lengthInput" class="form-label"
+                              >Length (in inches)</label
+                            >
+                            <input
+                              type="number"
+                              class="form-control"
+                              id="lengthInput"
+                              placeholder="Enter length"
+                            />
+                          </div>
+                          <div class="mb-3">
+                            <label for="shoulderInput" class="form-label"
+                              >Shoulder (in inches)</label
+                            >
+                            <input
+                              type="number"
+                              class="form-control"
+                              id="shoulderInput"
+                              placeholder="Enter shoulder measurement"
+                            />
+                          </div>
+                          <div class="mb-3">
+                            <label for="chestInput" class="form-label"
+                              >Chest 1" below Armhole (in inches)</label
+                            >
+                            <input
+                              type="number"
+                              class="form-control"
+                              id="chestInput"
+                              placeholder="Enter chest measurement"
+                            />
+                          </div>
+                          <div class="mb-3">
+                            <label for="sleeveInput" class="form-label"
+                              >Sleeve Length (in inches)</label
+                            >
+                            <input
+                              type="number"
+                              class="form-control"
+                              id="sleeveInput"
+                              placeholder="Enter sleeve length"
+                            />
+                          </div>
+                          <div class="mb-3">
+                            <label for="neckInput" class="form-label"
+                              >Neck Collar (in inches)</label
+                            >
+                            <input
+                              type="number"
+                              class="form-control"
+                              id="neckInput"
+                              placeholder="Enter neck collar measurement"
+                            />
+                          </div>
+                          <div class="mb-3">
+                            <label for="shalwarLengthInput" class="form-label"
+                              >Shalwar Length (in inches)</label
+                            >
+                            <input
+                              type="number"
+                              class="form-control"
+                              id="shalwarLengthInput"
+                              placeholder="Enter shalwar length"
+                            />
+                          </div>
+                          <div class="mb-3">
+                            <label for="shalwarBottomInput" class="form-label"
+                              >Shalwar Bottom (in inches)</label
+                            >
+                            <input
+                              type="number"
+                              class="form-control"
+                              id="shalwarBottomInput"
+                              placeholder="Enter shalwar bottom measurement"
+                            />
+                          </div>
+                          <button type="submit" class="btn btn-primary">
+                            Submit
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div
                   class="shop-bottom-bar-02 d-flex align-items-center my-3 px-3"
                 >
@@ -985,6 +1444,7 @@
     <script src="../../assets/js/theme.js"></script>
     <script src="../../assets/js/color-modes.js"></script>
 
+    <script type="module" src="../../assets/js/Navbar.js"></script>
     <script type="module" src="./shop.js"></script>
   </body>
 </html>

@@ -218,7 +218,7 @@ export const updatePagination = (
 export const renderStars = (rating) => {
   let starsHTML = "";
   for (let i = 1; i <= 5; i++) {
-    starsHTML += `<i class="bi bi-star${
+    starsHTML += `<i class="bi-star${
       i <= rating ? "-fill active" : ""
     }"></i>`;
   }
@@ -226,27 +226,137 @@ export const renderStars = (rating) => {
 };
 
 export const renderSizeOptions = (sizes, productId) => {
-  return sizes
-    .map(
-      (size) => `
-  <div class="form-check radio-text form-check-inline position-relative">
-    <input
-      class="form-check-input"
-      type="radio"
-      name="size_${productId}" // Use the productId for the name to group sizes by product
-      id="size_${size._id}" // Use the size id for unique identification
-      value="${size.size}"
-      ${size.stock === 0 ? "disabled" : ""}
-    />
-    <label class="radio-text-label" for="size_${size._id}">${size.size}</label>
-    ${
-      size.stock === 0
-        ? `<span class="position-absolute top-50 start-0 w-100" style="height: 1px; background-color: rgb(247, 83, 83); transform: rotate(-45deg);"></span>`
-        : ""
+  return `
+      ${sizes
+        .map(
+          (size) => `
+          <div class="form-check radio-text form-check-inline position-relative">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="size_${productId}" 
+              id="size_${size._id}" 
+              value="${size.size}"
+              ${size.stock === 0 ? "disabled" : ""}
+            />
+            <label class="radio-text-label" for="size_${
+              size._id
+            }">${size.size}</label>
+            ${
+              size.stock === 0
+                ? `<span class="position-absolute top-50 start-0 w-100" style="height: 1px; background-color: rgb(247, 83, 83); transform: rotate(-45deg);"></span>`
+                : ""
+            }
+          </div>
+       `
+        )
+        .join("")}
+      <!-- Custom Size Option -->
+        <div class="form-check radio-text form-check-inline position-relative">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="size_${productId}"
+            id="custom_size_${productId}" 
+            value="CUSTOM"
+            data-bs-toggle="modal"
+            data-bs-target="#px_custom_size_chart_modal"
+          />
+          <label class="radio-text-label" for="custom_size_${productId}">CM</label>
+        </div>
+      </div>
+  `;
+};
+
+export const renderRoundSizeOptions = (sizes, productId) => {
+  return `
+      ${sizes
+        .map(
+          (size) => `
+          <div class="form-check radio-text form-check-inline position-relative">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="size_${productId}" 
+              id="size_${size._id}" 
+              value="${size.size}"
+              ${size.stock === 0 ? "disabled" : ""}
+            />
+            <label class="radio-text-label rounded" for="size_${
+              size._id
+            }">${size.size}</label>
+            ${
+              size.stock === 0
+                ? `<span class="position-absolute top-50 start-0 w-100" style="height: 1px; background-color: rgb(247, 83, 83); transform: rotate(-45deg);"></span>`
+                : ""
+            }
+          </div>
+       `
+        )
+        .join("")}
+      <!-- Custom Size Option -->
+        <div class="form-check radio-text form-check-inline position-relative">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="size_${productId}"
+            id="custom_size_${productId}" 
+            value="CUSTOM"
+            data-bs-toggle="modal"
+            data-bs-target="#px_custom_size_chart_modal"
+          />
+          <label class="radio-text-label rounded" for="custom_size_${productId}">CM</label>
+        </div>
+      </div>
+  `;
+};
+
+export const validateCustomSizeChart = (formId) => {
+  const fields = [
+    { id: "lengthInput", label: "Length" },
+    { id: "shoulderInput", label: "Shoulder" },
+    { id: "chestInput", label: "Chest" },
+    { id: "sleeveInput", label: "Sleeve Length" },
+    { id: "neckInput", label: "Neck Collar" },
+    { id: "shalwarLengthInput", label: "Shalwar Length" },
+    { id: "shalwarBottomInput", label: "Shalwar Bottom" },
+  ];
+
+  let isValid = true;
+  const formData = {};
+
+  fields.forEach((field) => {
+    const input = document.getElementById(field.id);
+    const value = parseFloat(input.value);
+
+    if (!value || value <= 0) {
+      isValid = false;
+      input.classList.add("is-invalid");
+    } else {
+      input.classList.remove("is-invalid");
+      formData[field.label] = value;
     }
-  </div>`
-    )
-    .join("");
+  });
+
+  return { isValid, formData };
+};
+
+export const clearCustomSizeForm = () => {
+  const fields = [
+    "lengthInput",
+    "shoulderInput",
+    "chestInput",
+    "sleeveInput",
+    "neckInput",
+    "shalwarLengthInput",
+    "shalwarBottomInput",
+  ];
+
+  fields.forEach((fieldId) => {
+    const input = document.getElementById(fieldId);
+    input.value = "";
+    input.classList.remove("is-invalid");
+  });
 };
 
 export const formatPrice = (price) => {
@@ -394,4 +504,3 @@ export const calculateTax = (subtotal, taxRate = 0.1) => {
 export const calculateGrandTotal = (subtotal, tax, shipping = 0) => {
   return subtotal + tax + shipping;
 };
-

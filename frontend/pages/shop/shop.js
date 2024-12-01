@@ -4,6 +4,8 @@ import {
   updatePagination,
   renderStars,
   renderSizeOptions,
+  validateCustomSizeChart,
+  formatPrice,
 } from "../../assets/js/utils.js";
 import { addToCart, addToWishlist } from "../../assets/js/api.js";
 import { getToken } from "../../assets/js/auth.js";
@@ -15,51 +17,53 @@ document.addEventListener("DOMContentLoaded", async () => {
       ".shortby-dropdown .dropdown-item"
     );
 
-    const fetchCategoriesFilter = async () => {
-      try {
-        const response = await fetch(ENDPOINTS.GET_CATEGORIES, {
-          method: "GET",
-          headers: {
-            "Cache-Control": "no-cache",
-          },
-          credentials: "include",
-        });
-        const result = await response.json();
-    
-        if (result.categories && Array.isArray(result.categories)) {
-          categoriesList.innerHTML = result.categories
-            .map(
-              ({ _id, name, productCount }) => `
+  const fetchCategoriesFilter = async () => {
+    try {
+      const response = await fetch(ENDPOINTS.GET_CATEGORIES, {
+        method: "GET",
+        headers: {
+          "Cache-Control": "no-cache",
+        },
+        credentials: "include",
+      });
+      const result = await response.json();
+
+      if (result.categories && Array.isArray(result.categories)) {
+        categoriesList.innerHTML = result.categories
+          .map(
+            ({ _id, name, productCount }) => `
               <li class="nav-item">
-                <a href="#" class="nav-link" data-id="${_id}">${name} <span>(${productCount})</span></a>
+                <a href="#" class="nav-link" data-id="${_id}" data-name="${name.toLowerCase()}">${name} <span>(${productCount})</span></a>
               </li>`
-            )
-            .join("");
-    
-          categoriesList.querySelectorAll(".nav-link").forEach((link) => {
-            link.addEventListener("click", (e) => {
-              e.preventDefault();
-              
-              // Remove the 'active' class from all other category links
-              categoriesList.querySelectorAll(".nav-link").forEach((otherLink) => {
+          )
+          .join("");
+
+        categoriesList.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            // Remove the 'active' class from all other category links
+            categoriesList
+              .querySelectorAll(".nav-link")
+              .forEach((otherLink) => {
                 otherLink.classList.remove("active");
               });
-    
-              // Add 'active' class to the clicked link
-              link.classList.add("active");
-              
-              updateSelectedFilters();
-              updateURLWithFilters();
-            });
+
+            // Add 'active' class to the clicked link
+            link.classList.add("active");
+
+            updateSelectedFilters();
+            updateURLWithFilters();
           });
-        } else {
-          showToast("No categories found", "warning");
-        }
-      } catch (error) {
-        showToast(error, "danger");
+        });
+      } else {
+        showToast("No categories found", "warning");
       }
-    };
-    
+    } catch (error) {
+      showToast(error, "danger");
+    }
+  };
+
   const updateSelectedFilters = () => {
     selectedFilters.innerHTML = "";
     const activeLinks = document.querySelectorAll(".nav-link.active"),
@@ -115,8 +119,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             .forEach((input) => {
               input.checked = false;
             });
-          updateSelectedFilters(); // Clear selected filters
-          updateURLWithFilters(); // Clear URL filters
+          updateSelectedFilters(); 
+          updateURLWithFilters(); 
         });
       filterList.appendChild(clearAll);
     }
@@ -127,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const updateURLWithFilters = () => {
     const params = new URLSearchParams(),
       activeLinks = [...document.querySelectorAll(".nav-link.active")].map(
-        (link) => link.dataset.id
+        (link) => link.dataset.name.toLowerCase()
       ),
       checkedFilters = (selector) =>
         [...document.querySelectorAll(selector)].map((input) => input.value);
@@ -170,7 +174,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const applyFilter = (param, selector, type = "link") => {
       (params.get(param)?.split(",") || []).forEach((value) => {
         const el = document.querySelector(
-          `${selector}[data-id="${value}"], ${selector}[value="${value}"]`
+          `${selector}[data-name="${value.toLowerCase()}"], ${selector}[value="${value}"]`
         );
         if (el) {
           type === "link" ? el.classList.add("active") : (el.checked = true);
@@ -276,8 +280,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         .map(
           (product) => `
            <!-- Product Item -->
-        <div class="col-6 col-md-4 col-xl-3 my-3">
-          <div class="product-card-2">
+        <div class="col-6 col-md-4 col-lg-4 my-3">
+          <div class="product-card-2 overflow-hidden">
             <div class="product-card-image">
             <!-- Sale Badge -->
               ${
@@ -322,12 +326,14 @@ document.addEventListener("DOMContentLoaded", async () => {
               <div class="product-price">
                 <span class="text-primary">PKR ${
                   product.highlights.sale && product.salePrice !== null
-                    ? product.salePrice
-                    : product.price
+                    ? formatPrice(product.salePrice)
+                    : formatPrice(product.price)
                 }</span>
                 ${
                   product.highlights.sale && product.salePrice !== null
-                    ? `<del class="fs-sm text-muted">PKR ${product.price}</del>`
+                    ? `<del class="fs-sm text-muted">PKR ${formatPrice(
+                        product.price
+                      )}</del>`
                     : ""
                 }
               </div>
@@ -352,12 +358,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   };
 
+  document
+    .querySelector("#px_custom_size_chart_modal form")
+    .addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const { isValid, formData } = validateCustomSizeChart(
+        "px_custom_size_chart_modal"
+      );
+
+      if (!isValid) {
+        showToast("Please fill out all fields with positive values.");
+        return;
+      }
+
+      const modal = bootstrap.Modal.getInstance(
+        document.querySelector("#px_custom_size_chart_modal")
+      );
+      modal.hide();
+    });
+
   fetchFilteredProducts();
 
   const token = getToken();
 
   // Call these functions when needed
-  window.addToCart = (productId, quantity) =>
-    addToCart(productId, quantity);
+  window.addToCart = (productId, quantity) => addToCart(productId, quantity);
   window.addToWishlist = (productId) => addToWishlist(productId);
+
+  const closeButton = document.getElementById("closeSidebarButton");
+  const offcanvas = new bootstrap.Offcanvas("#shop_filter");
+
+  closeButton.addEventListener("click", () => {
+    offcanvas.hide();
+  });
 });

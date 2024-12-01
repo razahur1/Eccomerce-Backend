@@ -162,37 +162,51 @@ document.addEventListener("DOMContentLoaded", () => {
       if (result.success) {
         // Update product table body
         productTableBody.innerHTML = result.products
-          .map(
-            (product) => `
-          <tr class="text-center align-middle">
-            <td>${product.code}</td>
-            <td><img src="${
-              product.images[0].url
-            }" alt="Product Image" width="100" /></td>
-            <td>${product.name}</td>
-            <td>${formatPrice(product.price)}</td>
-            <td>
-              <button class="btn btn-sm btn-warning" onclick="editProduct('${
-                product._id
-              }', ${currentPage})">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-sm btn-danger" onclick="deleteProduct('${
-                product._id
-              }', ${currentPage})">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-              <button
-                class="btn btn-sm btn-info"
-                data-bs-toggle="modal"
-                data-bs-target="#viewProductModal"
-                onclick="viewProduct('${product._id}')">
-                <i class="fas fa-eye"></i>
-              </button>
-            </td>
-          </tr>
-        `
-          )
+          .map((product) => {
+            const sizes = product.sizes;
+            let stockStatus = "success";
+
+            const outOfStockSizes = sizes.filter((size) => size.stock === 0);
+
+            if (outOfStockSizes.length === sizes.length) {
+              stockStatus = "danger";
+            } else if (outOfStockSizes.length > 0) {
+              stockStatus = "warning";
+            }
+
+            return `
+            <tr class="text-center align-middle">
+              <td>
+                <span class="badge bg-${stockStatus} rounded-circle" style="width: 13px; height: 13px; display: inline-block; margin-right:20px"></span>
+                ${product.code}
+              </td>
+              <td><img src="${
+                product.images[0].url
+              }" alt="Product Image" width="100" /></td>
+              <td>${product.name}</td>
+              <td>${formatPrice(product.price)}</td>
+              <td>
+                <button class="btn btn-sm btn-warning" onclick="editProduct('${
+                  product._id
+                }', ${currentPage})">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteProduct('${
+                  product._id
+                }', ${currentPage})">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-info"
+                  data-bs-toggle="modal"
+                  data-bs-target="#viewProductModal"
+                  onclick="viewProduct('${product._id}')">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+          })
           .join("");
 
         // Update pagination controls

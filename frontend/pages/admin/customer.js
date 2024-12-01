@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   logoutHandler();
 
   const token = getToken();
-  const currentPage = getPageFromURL() || 1; 
+  const currentPage = getPageFromURL() || 1;
 
   // Function to fetch customers
   window.fetchCustomers = async function (page = currentPage, limit = 3) {
@@ -48,21 +48,28 @@ document.addEventListener("DOMContentLoaded", () => {
             Authorization: token,
             "Cache-Control": "no-cache",
           },
+          credentials: "include",
         }
       );
 
       const result = await response.json();
 
       if (result.success) {
-        // Update customer table body
-        document.querySelector("tbody").innerHTML = result.users
-          .map((user) => {
-            const fullName =
-              user.firstName && user.lastName
-                ? `${user.firstName} ${user.lastName}`
-                : user.firstName || user.lastName || "N/A";
+        if (result.users.length === 0) {
+          // Show no results message and stop reloading the page
+          document.querySelector("tbody").innerHTML = `<tr class="align-middle">
+              <td class="text-center" colspan='5'>No users found</td>
+            </tr>`;
+        } else {
+          // Update customer table body
+          document.querySelector("tbody").innerHTML = result.users
+            .map((user) => {
+              const fullName =
+                user.firstName && user.lastName
+                  ? `${user.firstName} ${user.lastName}`
+                  : user.firstName || user.lastName || "N/A";
 
-            return `
+              return `
             <tr class="align-middle">
               <td>${fullName}</td>
               <td>${user.email}</td>
@@ -82,9 +89,15 @@ document.addEventListener("DOMContentLoaded", () => {
               </td>
             </tr>
           `;
-          })
-          .join("");
+            })
+            .join("");
 
+          // Redirect to the last page if current page exceeds total pages
+          if (page > result.totalPages) {
+            window.location.href = `${window.location.pathname}?page=${result.totalPages}`;
+            return;
+          }
+        }
         // Update pagination info using the totalPages from API response
         updatePagination(
           result.totalUsers,
@@ -95,12 +108,6 @@ document.addEventListener("DOMContentLoaded", () => {
             updatePageInURL(newPage);
           }
         );
-
-        // Redirect to the last page if current page exceeds total pages
-        if (page > result.totalPages) {
-          window.location.href = `${window.location.pathname}?page=${result.totalPages}`;
-          return;
-        }
       } else {
         showToast("Failed to fetch customers", "danger");
       }
@@ -154,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(() => {
         fetchCustomers(1);
-        updatePageInURL(1); // Set the page to 1 in the URL
+        updatePageInURL(1);
       }, 500);
     });
 });

@@ -530,12 +530,13 @@
                           type="text"
                           class="form-control"
                           placeholder="Search orders"
+                          id="orderSearchInput"
                         />
                       </div>
                     </div>
                     <table class="table">
                       <thead>
-                        <tr>
+                        <tr class="text-center align-middle">
                           <th scope="col">Order Code</th>
                           <th scope="col">Customer Name</th>
                           <th scope="col">Order Item</th>
@@ -545,80 +546,27 @@
                           <th scope="col">Actions</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr>
-                          <td>9234234</td>
-                          <td>John Doe</td>
-                          <td>3</td>
-                          <td>$59.99</td>
-                          <td>
-                            <select
-                              class="form-select"
-                              aria-label="Order Status"
-                            >
-                              <option value="Pending" selected>Pending</option>
-                              <option value="Processing">Processing</option>
-                              <option value="Shipped">Shipped</option>
-                              <option value="Delivered">Delivered</option>
-                              <option value="Cancelled">Cancelled</option>
-                            </select>
-                          </td>
-                          <td>2023-09-21</td>
-                          <td>
-                            <button
-                              class="btn btn-sm btn-info"
-                              data-bs-toggle="modal"
-                              data-bs-target="#viewOrderModal"
-                              onclick="viewOrder('John Doe', 3, 59.99, 'Pending', '2023-09-21')"
-                            >
-                              <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn btn-sm btn-warning">
-                              Update
-                            </button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>9234234</td>
-                          <td>Jane Smith</td>
-                          <td>2</td>
-                          <td>$39.99</td>
-                          <td>
-                            <select
-                              class="form-select"
-                              aria-label="Order Status"
-                            >
-                              <option value="Pending">Pending</option>
-                              <option value="Processing" selected>
-                                Processing
-                              </option>
-                              <option value="Shipped">Shipped</option>
-                              <option value="Delivered">Delivered</option>
-                              <option value="Cancelled">Cancelled</option>
-                            </select>
-                          </td>
-                          <td>2023-09-20</td>
-                          <td>
-                            <button
-                              class="btn btn-sm btn-info"
-                              data-bs-toggle="modal"
-                              data-bs-target="#viewOrderModal"
-                              onclick="viewOrder('Jane Smith', 2, 39.99, 'Processing', '2023-09-20')"
-                            >
-                              <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn btn-sm btn-warning">
-                              Update
-                            </button>
-                          </td>
-                        </tr>
+                      <tbody id="orderTableBody">
+                        <!-- Dynamic rows will be populated here by JavaScript -->
                       </tbody>
                     </table>
                   </div>
                 </div>
+                <!-- Pagination Buttons -->
+                <div
+                  class="d-flex justify-content-between align-items-center my-3 px-3"
+                >
+                  <div id="pagination-info" class="text-muted"></div>
+                  <nav aria-label="Page navigation">
+                    <ul class="pagination" id="pagination-controls">
+                      <!-- Pagination buttons will be dynamically inserted here -->
+                    </ul>
+                  </nav>
+                </div>
               </div>
             </div>
           </div>
+          <!-- View Order Modal -->
           <div
             class="modal fade"
             id="viewOrderModal"
@@ -628,37 +576,141 @@
           >
             <div class="modal-dialog modal-lg">
               <div class="modal-content">
-                <div class="modal-header">
+                <!-- Header -->
+                <div class="modal-header bg-primary text-white">
                   <h5 class="modal-title" id="viewOrderModalLabel">
                     Order Details
                   </h5>
                   <button
                     type="button"
-                    class="btn-close"
+                    class="btn-close btn-close-white"
                     data-bs-dismiss="modal"
                     aria-label="Close"
                   ></button>
                 </div>
+
+                <!-- Body -->
                 <div class="modal-body">
-                  <h5 id="viewCustomerName"></h5>
-                  <p>
-                    <strong>Order Item Number:</strong>
-                    <span id="viewOrderItemNumber"></span>
-                  </p>
-                  <p>
-                    <strong>Total Price:</strong> $<span
-                      id="viewTotalPrice"
-                    ></span>
-                  </p>
-                  <p>
-                    <strong>Status:</strong> <span id="viewOrderStatus"></span>
-                  </p>
-                  <p>
-                    <strong>Order Date:</strong>
-                    <span id="viewOrderDate"></span>
-                  </p>
-                  <h6>Order Items:</h6>
-                  <ul id="viewOrderItemsList"></ul>
+                  <!-- Customer Info -->
+                  <div class="mb-4">
+                    <h5 class="mb-1" id="viewCustomerName"></h5>
+                    <p class="mb-0 text-muted">
+                      <strong>Order Code:</strong>
+                      <span id="viewOrderCode"></span>
+                    </p>
+                    <p class="mb-0 text-muted">
+                      <strong>Date Purchased:</strong>
+                      <span id="viewDatePurchase"></span>
+                    </p>
+                    <p class="mb-0 text-muted">
+                      <strong>Status:</strong>
+                      <span
+                        class="badge bg-info text-dark"
+                        id="viewOrderStatus"
+                      ></span>
+                    </p>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <!-- Order Summary -->
+                      <div class="border rounded p-3 mb-4">
+                        <h6 class="text-primary">Order Summary</h6>
+                        <p class="mb-1">
+                          <strong>Subtotal:</strong>
+                          <span id="viewSubTotal"></span>
+                        </p>
+                        <p class="mb-1">
+                          <strong>Shipping Cost:</strong>
+                          <span id="viewShippingCost"></span>
+                        </p>
+                        <p class="mb-1">
+                          <strong>Tax:</strong> <span id="viewTax"></span>
+                        </p>
+                        <p class="mb-0">
+                          <strong>Total:</strong>
+                          <span
+                            class="text-success fs-5"
+                            id="viewOrderTotal"
+                          ></span>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <!-- Payment Info -->
+                      <div class="border rounded p-3 mb-4">
+                        <h6 class="text-primary">Payment Information</h6>
+                        <p class="mb-1">
+                          <strong>Payment Method:</strong>
+                          <span id="paymentMethod"></span>
+                        </p>
+                        <p class="mb-1">
+                          <strong>Transaction ID:</strong>
+                          <span id="transactionId"></span>
+                        </p>
+                        <p class="mb-0">
+                          <strong>Payment Status:</strong>
+                          <span id="paymentStatus"></span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <!-- Shipping Info -->
+                      <div class="border rounded p-3 mb-4">
+                        <h6 class="text-primary">Shipping Information</h6>
+                        <ul class="list-unstyled mb-0">
+                          <li>
+                            <strong>First Name:</strong>
+                            <span id="shippingFirstName"></span>
+                          </li>
+                          <li>
+                            <strong>Last Name:</strong>
+                            <span id="shippingLastName"></span>
+                          </li>
+                          <li>
+                            <strong>Address:</strong>
+                            <span id="shippingAddress"></span>
+                          </li>
+                          <li>
+                            <strong>Postal Code:</strong>
+                            <span id="shippingPostalCode"></span>
+                          </li>
+                          <li>
+                            <strong>City:</strong>
+                            <span id="shippingCity"></span>
+                          </li>
+                          <li>
+                            <strong>Country:</strong>
+                            <span id="shippingCountry"></span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <!-- Contact Info -->
+                      <div class="border rounded p-3 mb-4">
+                        <h6 class="text-primary">Contact Details</h6>
+                        <p class="mb-1">
+                          <strong>Mobile:</strong>
+                          <span id="viewMobileNumber"></span>
+                        </p>
+                        <p class="mb-1">
+                          <strong>Email:</strong>
+                          <span id="viewEmail"></span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Order Items -->
+                  <div class="border rounded p-3">
+                    <h6 class="text-primary">Order Items</h6>
+                    <ul id="viewOrderItemsList" class="list-unstyled mb-0"></ul>
+                  </div>
                 </div>
               </div>
             </div>

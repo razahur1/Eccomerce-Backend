@@ -447,9 +447,7 @@
                         type="tel"
                         placeholder="Mobile Phone"
                         required
-                        
                       />
-                      
                     </div>
                   </div>
                   <h6 class="mb-4 h3">Delivery</h6>
@@ -477,9 +475,8 @@
                           <label
                             class="form-check-label m-0 stretched-link"
                             for="savedAddresses"
+                            >Use Saved Address</label
                           >
-                            Use Saved Address
-                          </label>
                         </div>
                       </div>
                       <div
@@ -494,7 +491,7 @@
                       </div>
                     </div>
 
-                    <!-- Add New Address Option -->
+                    <!-- Add New Address Option (Automatically Selected and Expanded) -->
                     <div class="card mb-3 shadow-none border">
                       <div
                         class="card-header p-0 position-relative bg-transparent"
@@ -503,7 +500,7 @@
                           class="form-check m-3 collapsed"
                           data-bs-toggle="collapse"
                           data-bs-target="#addNewAddressCollapse"
-                          aria-expanded="false"
+                          aria-expanded="true"
                         >
                           <input
                             class="form-check-input"
@@ -512,18 +509,18 @@
                             id="addNewAddress"
                             data-bs-toggle="collapse"
                             data-bs-target="#addNewAddressCollapse"
-                            aria-expanded="false"
+                            aria-expanded="true"
+                            checked
                           />
                           <label
                             class="form-check-label m-0 stretched-link"
                             for="addNewAddress"
+                            >Add New Address</label
                           >
-                            Add New Address
-                          </label>
                         </div>
                       </div>
                       <div
-                        class="collapse"
+                        class="collapse show"
                         id="addNewAddressCollapse"
                         data-bs-parent="#address-options"
                       >
@@ -634,15 +631,15 @@
                               <label
                                 class="form-check-label"
                                 for="checkout-saveAddress"
+                                >Save this address for next time ?</label
                               >
-                                Save this address for next time ?
-                              </label>
                             </div>
                           </form>
                         </div>
                       </div>
                     </div>
                   </div>
+
                   <h6 class="mb-4 h3">Shipping Method</h6>
                   <div class="table-responsive mb-6">
                     <table class="table table-bordered table-hover mb-0">
@@ -696,7 +693,7 @@
                           class="form-check-input collapsed"
                           id="checkout_Payfast"
                           name="payment"
-                          value="payfast"
+                          value="ONLINE"
                           type="radio"
                           data-bs-toggle="collapse"
                           data-bs-action="show"
@@ -742,7 +739,7 @@
                           class="form-check-input collapsed"
                           id="checkout_Payment_COD"
                           name="payment"
-                          value="cod"
+                          value="COD"
                           type="radio"
                           data-bs-toggle="collapse"
                           data-bs-action="hide"

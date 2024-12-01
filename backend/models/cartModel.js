@@ -12,8 +12,14 @@ const cartItemModel = new mongoose.Schema({
     min: 1,
   },
   size: {
-    type: String,
-    required: true,
+    label: {
+      type: String,
+      required: true,  
+    },
+    customSize: {
+      type: Object, 
+      default: null, 
+    },
   },
 });
 

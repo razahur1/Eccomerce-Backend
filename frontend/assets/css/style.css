@@ -37099,15 +37099,27 @@ img {
 
 .product-card-2 .rating-star {
     font-size: 12px;
-    margin-bottom: 5px
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
 }
 
 .product-card-2 .form-check {
-    margin: 0 2px
+    margin: 2px 2px
 }
 
 .product-card-2 .nav-thumbs {
     padding-top: 10px
+}
+
+@media (max-width: 575.98px) {
+    .product-card-2 .nav-thumbs {
+        display: flex;
+        flex-wrap: nowrap;
+        max-width: 100%;
+        overflow-x: auto
+    }
 }
 
 .product-card-2:hover {
@@ -39291,3 +39303,5 @@ img {
 .custom-dropdown-link:hover {
     color: red; /* Change text color on hover */
 }
+
+

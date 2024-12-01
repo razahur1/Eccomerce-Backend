@@ -16,7 +16,8 @@ const ENDPOINTS = {
   GET_PROFILE: `${API_BASE_URL}/user/profile`,
   UPDATE_PROFILE: `${API_BASE_URL}/user/update-profile`,
   GET_USERS: `${API_BASE_URL}/user/get-all`,
-
+  GET_USER_COUNT: `${API_BASE_URL}/user/count-all`,
+  GET_OVERVIEW: `${API_BASE_URL}/user/overview`,
 
   //----------------ADDRESS----------------------
 
@@ -44,6 +45,9 @@ const ENDPOINTS = {
 
   GET_PRODUCT: `${API_BASE_URL}/product`,
   GET_PRODUCTS: `${API_BASE_URL}/product/get-all`,
+  GET_NEW_ARRIVALS: `${API_BASE_URL}/product/new-arrivals`,
+  GET_BEST_SELLERS: `${API_BASE_URL}/product/best-sellers`,
+  GET_OUT_OF_STOCK: `${API_BASE_URL}/product/out-of-stock`,
   ADD_PRODUCT: `${API_BASE_URL}/product/create`,
   UPDATE_PRODUCT: `${API_BASE_URL}/product/update`,
   DELETE_PRODUCT: `${API_BASE_URL}/product/delete`,
@@ -56,12 +60,22 @@ const ENDPOINTS = {
   CHECK_WiSHLIST: `${API_BASE_URL}/wishlist/check`,
 
   //------------------CART---------------------
-  
+
   ADD_TO_CART: `${API_BASE_URL}/cart/add`,
   GET_CART: `${API_BASE_URL}/cart/get`,
   REMOVE_FROM_CART: `${API_BASE_URL}/cart/remove`,
   UPDATE_CART: `${API_BASE_URL}/cart/update`,
   UPDATE_ALL_CART: `${API_BASE_URL}/cart/update-all`,
+
+  //------------------ORDER---------------------
+
+  CREATE_ORDER: `${API_BASE_URL}/order/create`,
+  GET_ORDER: `${API_BASE_URL}/order`,
+  GET_ALL_ORDER: `${API_BASE_URL}/order/get-all`,
+  GET_PENDING_ORDER: `${API_BASE_URL}/order/get-pending`,
+  GET_MY_ORDER: `${API_BASE_URL}/order/my-orders`,
+  UPDATE_ORDER: `${API_BASE_URL}/order/update`,
+  DELETE_ORDER: `${API_BASE_URL}/order/delete`,
 };
 
 export default ENDPOINTS;

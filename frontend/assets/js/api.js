@@ -1,11 +1,17 @@
 import ENDPOINTS from "./config.js";
-import { showToast, showSpinner, hideSpinner } from "./utils.js";
+import {
+  showToast,
+  showSpinner,
+  hideSpinner,
+  validateCustomSizeChart,
+  clearCustomSizeForm,
+} from "./utils.js";
 import { checkUserAuth, getToken } from "./auth.js";
 
 const token = getToken();
 
 // Function to add a product to the cart
-export const addToCart = async (productId, quantity = 1) => {
+export const addToCart = async (productId, quantity = 1, customSize = null) => {
   if (!checkUserAuth()) {
     showToast("Please Login First....!", "warning");
     return;
@@ -21,7 +27,23 @@ export const addToCart = async (productId, quantity = 1) => {
     return;
   }
 
-  const size = selectedSize.value;
+  const size = selectedSize ? selectedSize.value : null;
+
+  if (!size) {
+    showToast("Please select a valid size.", "warning");
+    return;
+  }
+
+  if (size === "CUSTOM") {
+    const { isValid, formData } = validateCustomSizeChart(
+      "px_custom_size_chart_modal"
+    );
+    if (!isValid) {
+      showToast("Please fill out all fields with positive values.");
+      return;
+    }
+    customSize = formData;
+  }
 
   try {
     showSpinner();
@@ -32,18 +54,22 @@ export const addToCart = async (productId, quantity = 1) => {
         Authorization: token,
       },
       credentials: "include",
-      body: JSON.stringify({ productId, quantity, size }),
+      body: JSON.stringify({
+        productId,
+        quantity,
+        size: { label: size, customSize },
+      }),
     });
-
     const result = await response.json();
-
     if (result.success) {
-      showToast("Product added to cart", "success");
+      showToast("Product Added to your Cart Successfully", "success");
+      clearCustomSizeForm();
+      GetWishlistAndCartCounts();
     } else {
-      showToast(result.error, "warning");
+      showToast(result.message, "warning");
     }
   } catch (error) {
-    showToast("Error adding product to cart: " + error, "danger");
+    showToast("Error adding product to cart: " + error.message, "danger");
   } finally {
     hideSpinner();
   }
@@ -72,6 +98,7 @@ export const addToWishlist = async (productId) => {
 
     if (result.success) {
       showToast("Product added to your wishlist", "success");
+      GetWishlistAndCartCounts();
     } else {
       showToast(result.error, "warning");
     }
@@ -88,6 +115,7 @@ export const fetchCartItem = async () => {
     return;
   }
   try {
+    showSpinner();
     const response = await fetch(ENDPOINTS.GET_CART, {
       method: "GET",
       headers: {
@@ -100,23 +128,25 @@ export const fetchCartItem = async () => {
     const data = await response.json();
 
     if (data.success) {
-      return data.cart.items; 
+      return data.cart.items;
     } else {
-      return []; 
+      return [];
     }
   } catch (error) {
     console.error("Error fetching cart:", error);
     return [];
-  } 
+  } finally {
+    hideSpinner();
+  }
 };
 
-
-export const fetchAddresses = async () =>{
+export const fetchAddresses = async () => {
   if (!checkUserAuth()) {
     showToast("Please Login First....!", "warning");
     return;
   }
   try {
+    showSpinner();
     const response = await fetch(ENDPOINTS.GET_ADDRESSES, {
       method: "GET",
       headers: {
@@ -129,13 +159,48 @@ export const fetchAddresses = async () =>{
     const data = await response.json();
 
     if (data.success) {
-      return data.addresses; 
+      return data.addresses;
     } else {
-      return []; 
+      return [];
     }
   } catch (error) {
     console.error("Error fetching cart:", error);
     return [];
+  } finally {
+    hideSpinner();
   }
-}
+};
 
+export const GetWishlistAndCartCounts = async () => {
+  const wishlistCountElement = document.querySelector(".fi-heart + sub");
+  const cartCountElement = document.querySelector(".fi-shopping-cart + sub");
+
+  const wishlistCountMobile = document.querySelector(".mobile-heart + sub");
+  const cartCountMobile = document.querySelector(".mobile-cart + sub");
+
+  try {
+    const response = await fetch(ENDPOINTS.GET_USER_COUNT, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+      credentials: "include",
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      wishlistCountElement
+        ? (wishlistCountElement.textContent = data.wishlistCount)
+        : null;
+      cartCountElement ? (cartCountElement.textContent = data.cartCount) : null;
+      wishlistCountMobile
+        ? (wishlistCountMobile.textContent = data.wishlistCount)
+        : null;
+      cartCountMobile ? (cartCountMobile.textContent = data.cartCount) : null;
+    }
+  } catch (error) {
+    console.error("Error fetching user count:", error);
+  }
+};

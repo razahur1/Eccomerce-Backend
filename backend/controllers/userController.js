@@ -1,6 +1,9 @@
 import userModel from "../models/userModel.js";
 import orderModel from "../models/orderModel.js";
 import addressModel from "../models/addressModel.js";
+import wishlistModel from "../models/wishlistModel.js";
+import productModel from "../models/productModel.js";
+import cartModel from "../models/cartModel.js";
 import { getDataUri } from "../helpers/dataUriHelper.js";
 import cloudinary from "../config/cloudinary.js";
 
@@ -130,6 +133,34 @@ export const getUserByIDController = async (req, res) => {
   }
 };
 
+// GET - Get user's wishlist and cart count
+export const getUserCountController = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Fetch wishlist count
+    const wishlist = await wishlistModel.findOne({ user: userId });
+    const wishlistCount = wishlist ? wishlist.products.length : 0;
+
+    // Fetch cart count
+    const cart = await cartModel.findOne({ user: userId });
+    const cartCount = cart ? cart.items.length : 0;
+
+    res.status(200).send({
+      success: true,
+      wishlistCount,
+      cartCount,
+    });
+  } catch (error) {
+    console.error("Error fetching user count:", error);
+    res.status(500).send({
+      success: false,
+      message: "Error fetching user count",
+      error: error.message,
+    });
+  }
+};
+
 // PUT - Update user profile with photo
 export const updateProfileWithPicController = async (req, res) => {
   try {
@@ -181,6 +212,34 @@ export const updateProfileWithPicController = async (req, res) => {
       success: false,
       message: "Error updating user profile",
       error,
+    });
+  }
+};
+
+// GET - Get overview for admin dashboard
+export const getOverviewController = async (req, res) => {
+  try {
+    const totalProducts = await productModel.countDocuments();
+    const totalOrders = await orderModel.countDocuments();
+    const totalCustomers = await userModel.countDocuments({
+      role: { $ne: "admin" },
+    });
+    const totalRevenue = await orderModel.aggregate([
+      { $group: { _id: null, totalRevenue: { $sum: "$totalAmount" } } },
+    ]);
+
+    res.status(200).send({
+      success: true,
+      totalProducts,
+      totalOrders,
+      totalCustomers,
+      totalRevenue: totalRevenue.length > 0 ? totalRevenue[0].totalRevenue : 0,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error fetching dashbaord overview",
+      error: error.message,
     });
   }
 };

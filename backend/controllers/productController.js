@@ -1,6 +1,7 @@
 import productModel from "../models/productModel.js";
 import { getDataUri } from "../helpers/dataUriHelper.js";
 import cloudinary from "../config/cloudinary.js";
+import categoryModel from "../models/categoryModel.js";
 
 // POST - Add Products
 export const addProductController = async (req, res) => {
@@ -119,8 +120,8 @@ export const getProductsController = async (req, res) => {
       adored,
       trendy,
       sale,
-      page = 1, // Default to the first page
-      limit = 12, // Default limit of products per page
+      page = 1,
+      limit = 12,
     } = req.query;
 
     // Get the current date and time
@@ -128,8 +129,8 @@ export const getProductsController = async (req, res) => {
 
     // Update products where the saleEndDate has passed
     await productModel.updateMany(
-      { saleEndDate: { $lte: currentDate }, "highlights.sale": true }, // Find products where saleEndDate is in the past and still marked as sale
-      { $set: { "highlights.sale": false } } // Set sale highlight to false
+      { saleEndDate: { $lte: currentDate }, "highlights.sale": true },
+      { $set: { "highlights.sale": false } }
     );
 
     // Base query object
@@ -149,7 +150,21 @@ export const getProductsController = async (req, res) => {
 
     // Filter by category
     if (category) {
-      queryObject.category = category;
+      const categoryDoc = await categoryModel.findOne({
+        name: category.trim(),
+      });
+      if (categoryDoc) {
+        queryObject.category = categoryDoc._id;
+      } else {
+        // If no matching category is found, return an empty result
+        return res.status(200).send({
+          success: true,
+          products: [],
+          totalProducts: 0,
+          currentPage: Number(page),
+          totalPages: 0,
+        });
+      }
     }
 
     // Filter by gender
@@ -169,23 +184,11 @@ export const getProductsController = async (req, res) => {
     }
 
     // Filter by highlights
-    if (justIn) {
-      queryObject["highlights.justIn"] = justIn === "true";
-    }
-    if (popular) {
-      queryObject["highlights.popular"] = popular === "true";
-    }
-    if (valued) {
-      queryObject["highlights.valued"] = valued === "true";
-    }
-    if (adored) {
-      queryObject["highlights.adored"] = adored === "true";
-    }
-    if (trendy) {
-      queryObject["highlights.trendy"] = trendy === "true";
-    }
-    if (sale) {
-      queryObject["highlights.sale"] = sale === "true";
+    const highlights = { justIn, popular, valued, adored, trendy, sale };
+    for (const [key, value] of Object.entries(highlights)) {
+      if (value) {
+        queryObject[`highlights.${key}`] = value === "true";
+      }
     }
 
     // Sort by price, ratingsAverage, or createdAt
@@ -205,7 +208,7 @@ export const getProductsController = async (req, res) => {
     }
 
     // Calculate pagination
-    const skip = (page - 1) * limit; // Calculate how many documents to skip
+    const skip = (page - 1) * limit;
 
     // Fetch products with filters, search, highlights, sorting, and pagination
     const products = await productModel
@@ -213,7 +216,7 @@ export const getProductsController = async (req, res) => {
       .populate("category")
       .sort(sortObject)
       .skip(skip)
-      .limit(Number(limit)); // Convert limit to a number
+      .limit(Number(limit));
 
     // Get total count of products for pagination
     const totalProducts = await productModel.countDocuments(queryObject);
@@ -223,7 +226,7 @@ export const getProductsController = async (req, res) => {
       products,
       totalProducts,
       currentPage: Number(page),
-      totalPages: Math.ceil(totalProducts / limit), // Calculate total pages
+      totalPages: Math.ceil(totalProducts / limit),
     });
   } catch (error) {
     res.status(500).send({
@@ -501,7 +504,7 @@ export const deleteProductImageController = async (req, res) => {
 export const getRelatedProductsController = async (req, res) => {
   try {
     const productId = req.params.id;
-    const limit = parseInt(req.query.limit) || 6; // Limit for related products
+    const limit = parseInt(req.query.limit) || 6;
 
     // Find the current product by its ID and populate categories and tags
     const currentProduct = await productModel
@@ -541,6 +544,75 @@ export const getRelatedProductsController = async (req, res) => {
   }
 };
 
+// GET - Get New Arrivals
+export const getNewArrivalsController = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 8;
+
+    // Fetch products sorted by newest first
+    const newArrivals = await productModel
+      .find({})
+      .sort({ createdAt: -1 })
+      .limit(limit);
+
+    res.status(200).send({
+      success: true,
+      newArrivals,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      message: "Error fetching new arrivals",
+      error: error.message,
+    });
+  }
+};
+
+// GET - Get Best Sellers
+export const getBestSellersController = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 6;
+
+    // Fetch products sorted by ratings average and count
+    const bestSellers = await productModel
+      .find({})
+      .sort({ ratingsAverage: -1, ratingsCount: -1 })
+      .limit(limit);
+
+    res.status(200).send({
+      success: true,
+      bestSellers,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      message: "Error fetching best sellers",
+      error: error.message,
+    });
+  }
+};
+
+export const getOutOfStockProductsController = async (req, res) => {
+  try {
+    const outOfStockProducts = await productModel.find({
+      "sizes.stock": { $eq: 0 },
+    });
+    res.status(200).send({
+      success: true,
+      products: outOfStockProducts,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      message: "Error fetching out of stock products",
+      error: error.message,
+    });
+  }
+};
+
 // POST - Add review for a product
 export const addProductReviewController = async (req, res) => {
   try {
@@ -559,13 +631,13 @@ export const addProductReviewController = async (req, res) => {
     }
 
     // Check if the user has already reviewed this product
-    // const existingReview = product.reviews.find(
-    //   (review) => review.user.toString() === userId.toString()
-    // );
+    const existingReview = product.reviews.find(
+      (review) => review.user.toString() === userId.toString()
+    );
 
-    // if (existingReview) {
-    //   return res.status(400).send({ error: "Review already exists" });
-    // }
+    if (existingReview) {
+      return res.status(400).send({ error: "Review already exists" });
+    }
 
     // Create and save the new review
     const newReview = {

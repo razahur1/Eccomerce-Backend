@@ -1,6 +1,5 @@
 import ENDPOINTS from "../../assets/js/config.js";
 import {
-  checkAdminAuth,
   checkUserAuth,
   getToken,
   loadUserInfo,
@@ -21,8 +20,10 @@ import {
 } from "../../assets/js/utils.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (!checkAdminAuth()) {
-    window.location.href = "../login/unauthorized.html";
+  // Redirect to login if user is not authenticated
+  if (!checkUserAuth()) {
+    window.location.href = "../login/login.html";
+    return;
   }
 
   loadUserInfo();
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const orderSearchInput = document.getElementById("orderSearchInput");
 
   // Fetch and display orders
-  async function fetchOrders(page = currentPage, limit = 3) {
+  async function fetchOrders(page = 1, limit = 3) {
     try {
       showSpinner();
 
@@ -46,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const response = await fetch(
-        `${ENDPOINTS.GET_ALL_ORDER}?${queryParams.toString()}`,
+        `${ENDPOINTS.GET_MY_ORDER}?${queryParams.toString()}`,
         {
           method: "GET",
           headers: {
@@ -61,66 +62,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (result.success) {
         if (result.orders.length === 0) {
-          document.querySelector("tbody").innerHTML = `
-          <tr class="align-middle">
-            <td class="text-center" colspan="7">No order found</td>
-          </tr>`;
+          // Show no results message and stop reloading the page
+          document.querySelector("tbody").innerHTML = `<tr class="align-middle">
+              <td class="text-center" colspan='5'>No order found</td>
+            </tr>`;
         } else {
           orderTableBody.innerHTML = result.orders
-            .map((order) => {
-              // Calculate total quantity of items in the order
-              const totalItems = order.orderItems.reduce(
-                (sum, item) => sum + item.quantity,
-                0
-              );
-
-              return `
-              <tr class="text-center align-middle">
-                <td>${order.code}</td>
-                <td>${order.shippingInfo.firstName} ${
-                order.shippingInfo.lastName
-              }</td>
-                <td>${totalItems}</td>
-                <td>${formatPrice(order.totalAmount)}</td>
-                <td>
-                  <select
-                    class="form-select"
-                    aria-label="Order Status"
-                    onchange="updateOrderStatus('${order._id}', this.value)"
-                  >
-                    <option value="Pending" ${
-                      order.orderStatus === "Pending" ? "selected" : ""
-                    }>Pending</option>
-                    <option value="Processing" ${
-                      order.orderStatus === "Processing" ? "selected" : ""
-                    }>Processing</option>
-                    <option value="Shipped" ${
-                      order.orderStatus === "Shipped" ? "selected" : ""
-                    }>Shipped</option>
-                    <option value="Delivered" ${
-                      order.orderStatus === "Delivered" ? "selected" : ""
-                    }>Delivered</option>
-                    <option value="Cancelled" ${
-                      order.orderStatus === "Cancelled" ? "selected" : ""
-                    }>Cancelled</option>
-                  </select>
-                </td>
-                <td>${
-                  new Date(order.createdAt).toISOString().split("T")[0]
-                }</td>
-                <td>
-                  <button
-                    class="btn btn-sm btn-info"
-                    data-bs-toggle="modal"
-                    data-bs-target="#viewOrderModal"
-                    onclick="viewOrder('${order._id}')"
-                  >
-                    <i class="fas fa-eye"></i>
-                  </button>      
-                </td>
-              </tr>
-            `;
-            })
+            .map(
+              (order) => `
+            <tr class="text-center align-middle">
+              <td>${order.code}</td>
+              <td>${new Date(order.createdAt).toDateString()}</td>
+              <td>${order.orderStatus}</td>
+              <td>${formatPrice(order.totalAmount)}</td>
+              <td>
+                <button
+                  class="btn btn-sm btn-info"
+                  data-bs-toggle="modal"
+                  data-bs-target="#viewOrderModal"
+                  onclick="viewOrder('${order._id}')"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </td>
+            </tr>
+          `
+            )
             .join("");
 
           // Redirect to the last page if current page exceeds total pages
@@ -188,14 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
           order.tax
         )}`;
 
-        // Payment Info
-        document.getElementById("paymentMethod").textContent =
-          order.paymentMethod || "N/A";
-        document.getElementById("transactionId").textContent =
-          order.paymentInfo?.id || "N/A";
-        document.getElementById("paymentStatus").textContent =
-          order.paymentInfo?.status || "N/A";
-
         // Shipping Info
         document.getElementById("shippingFirstName").textContent =
           order.shippingInfo.firstName;
@@ -210,12 +169,8 @@ document.addEventListener("DOMContentLoaded", () => {
           order.shippingInfo.city;
         document.getElementById("shippingCountry").textContent =
           order.shippingInfo.country;
-
-        // Contact Info
-        document.getElementById("viewMobileNumber").textContent =
-          order.mobileNumber || "N/A";
-        document.getElementById("viewEmail").textContent =
-          order.user.email || "N/A";
+        document.getElementById("mobileNumber").textContent =
+          order.mobileNumber;
 
         // Order Items
         const itemsList = document.getElementById("viewOrderItemsList");
@@ -262,31 +217,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("Failed to fetch order details:", error);
       showToast("Unable to load order details. Please try again later.");
-    }
-  };
-
-  window.updateOrderStatus = async function (orderId, status) {
-    try {
-      const response = await fetch(`${ENDPOINTS.UPDATE_ORDER}/${orderId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-        credentials: "include",
-        body: JSON.stringify({ orderStatus: status }),
-      });
-
-      const result = await response.json();
-      if (result.success) {
-        showToast("Order status updated successfully", "success");
-        fetchOrders(currentPage);
-      } else {
-        showToast("Failed to update order status: " + result.message, "danger");
-      }
-    } catch (error) {
-      console.error("Error updating order status:", error);
-      showToast("An error occurred while updating order status", "danger");
     }
   };
 
